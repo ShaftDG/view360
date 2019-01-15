@@ -10,7 +10,12 @@
   "dependencies": {
     "vue": "^2.5.21",
     "vue-router": "^3.0.1",
-    "vuex": "^3.0.1"
+    "vuex": "^3.0.1",
+    "babylonjs": "^3.3.0",
+    "babylonjs-gui": "^3.3.0",
+    "cannon": "^0.6.2",
+    "earcut": "^2.1.4",
+    "oimo": "^1.0.9"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.3.0",

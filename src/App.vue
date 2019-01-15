@@ -1,31 +1,284 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+  <div v-if="isVisibleBABYLONScene" id='app'>
+    <div id='nav'>
+      <router-link to='/'>Home</router-link> |
+      <router-link to='/about'>About</router-link>
     </div>
-    <router-view/>
+    <router-view :location=currentSceneName @selectedLocation="onChangeLocation" />
+  </div>
+  <div v-else class="loadView">
+    <LoadView/>
   </div>
 </template>
 
+<script>
+import BABYLON from 'babylonjs'
+import 'babylonjs-gui'
+import LoadView from './views/LoadView.vue'
+
+import CreateCustomScene from './libs/CreateCustomScene'
+
+export default {
+  data: function () {
+    return {
+      isVisibleBABYLONScene: false,
+      isVisibleVUEView: false,
+      currentSceneName: 'scene1',
+      currentScene: null,
+      tempSceneName: null
+    }
+  },
+  methods: {
+    onChangeLocation (value) {
+      this.currentScene.isTransitionSceneOff = true
+      this.tempSceneName = value
+      // this.currentSceneName = value
+    },
+    onLoadedChildren (value) {
+      this.changeVisibleVUEView(value)
+      // console.log(222222222) // someValue
+    },
+    changeVisibleBABYLONScene (value) {
+      this.isVisibleBABYLONScene = value
+    },
+    changeVisibleVUEView (value) {
+      this.isVisibleVUEView = value
+    }
+  },
+  components: {
+    LoadView
+  },
+  mounted () {
+    this.$nextTick(function () {
+      // this.changeVisibleVUEView(true)
+      if (BABYLON.Engine.isSupported()) {
+        var scope = this
+        var canvas = document.querySelector('#renderCanvas')
+        var engine = new BABYLON.Engine(canvas, true, { stencil: true }, false)
+        engine.disableManifestCheck = true
+
+        BABYLON.Effect.ShadersStore['fadePixelShader'] =
+          'precision highp float;' +
+          'varying vec2 vUV;' +
+          'uniform sampler2D textureSampler;' +
+          'uniform float fadeLevel;' +
+          'void main(void){' +
+          'vec4 baseColor = texture2D(textureSampler, vUV) * fadeLevel;' +
+          'baseColor.a = 1.0;' +
+          'gl_FragColor = baseColor;' +
+          '}'
+
+        var parameters1 = {
+          nameScene: 'scene1',
+          cameraPosition: new BABYLON.Vector3(0, 7, 20),
+          cameraTarget: new BABYLON.Vector3(0, 5, 0),
+          fadeLevel: 1,
+          cubeMap: '1',
+          exits: [
+            {
+              nameExitRoom: 'scene3',
+              positionExitRoom: new BABYLON.Vector3(-5, -13, 49),
+              rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
+            }
+          ],
+          engine: engine
+        }
+        var scene1 = new CreateCustomScene(parameters1, scope)
+
+        var parameters2 = {
+          nameScene: 'scene2',
+          cameraPosition: new BABYLON.Vector3(20, 7, 0),
+          cameraTarget: new BABYLON.Vector3(0, 5, 0),
+          fadeLevel: 0,
+          cubeMap: '2',
+          exits: [
+            {
+              nameExitRoom: 'scene3',
+              positionExitRoom: new BABYLON.Vector3(49, -11, -4),
+              rotationExitRoom: new BABYLON.Vector3(0, Math.PI / 2, 0.07)
+            }
+          ],
+          engine: engine
+        }
+        var scene2 = new CreateCustomScene(parameters2, scope)
+
+        var parameters3 = {
+          nameScene: 'scene3',
+          cameraPosition: new BABYLON.Vector3(-20, 7, 0),
+          cameraTarget: new BABYLON.Vector3(0, 5, 0),
+          fadeLevel: 0,
+          cubeMap: '3',
+          exits: [
+            {
+              nameExitRoom: 'scene1',
+              positionExitRoom: new BABYLON.Vector3(-49, -11, -20),
+              rotationExitRoom: new BABYLON.Vector3(0, -Math.PI / 2, 0.1)
+            },
+            {
+              nameExitRoom: 'scene2',
+              positionExitRoom: new BABYLON.Vector3(-10, -22, 49),
+              rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
+            },
+            {
+              nameExitRoom: 'scene4',
+              positionExitRoom: new BABYLON.Vector3(49, -11, -25),
+              rotationExitRoom: new BABYLON.Vector3(0, Math.PI / 2, 0.07)
+            }
+          ],
+          engine: engine
+        }
+        var scene3 = new CreateCustomScene(parameters3, scope)
+
+        var parameters4 = {
+          nameScene: 'scene4',
+          cameraPosition: new BABYLON.Vector3(-20, 7, 0),
+          cameraTarget: new BABYLON.Vector3(0, 5, 0),
+          fadeLevel: 0,
+          cubeMap: '4',
+          exits: [
+            {
+              nameExitRoom: 'scene3',
+              positionExitRoom: new BABYLON.Vector3(-49, -11, 0),
+              rotationExitRoom: new BABYLON.Vector3(0, -Math.PI / 2, 0)
+            },
+            {
+              nameExitRoom: 'scene5',
+              positionExitRoom: new BABYLON.Vector3(10, -11, -49),
+              rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
+            }
+          ],
+          engine: engine
+        }
+        var scene4 = new CreateCustomScene(parameters4, scope)
+
+        var parameters5 = {
+          nameScene: 'scene5',
+          cameraPosition: new BABYLON.Vector3(-20, 7, 0),
+          cameraTarget: new BABYLON.Vector3(0, 5, 0),
+          fadeLevel: 0,
+          cubeMap: '5',
+          exits: [
+            {
+              nameExitRoom: 'scene4',
+              positionExitRoom: new BABYLON.Vector3(15, -11, -49),
+              rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
+            },
+            {
+              nameExitRoom: 'scene6',
+              positionExitRoom: new BABYLON.Vector3(15, -11, 49),
+              rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
+            }
+          ],
+          engine: engine
+        }
+        var scene5 = new CreateCustomScene(parameters5, scope)
+
+        var parameters6 = {
+          nameScene: 'scene6',
+          cameraPosition: new BABYLON.Vector3(-20, 7, 0),
+          cameraTarget: new BABYLON.Vector3(0, 5, 0),
+          fadeLevel: 0,
+          cubeMap: '6',
+          exits: [
+            {
+              nameExitRoom: 'scene5',
+              positionExitRoom: new BABYLON.Vector3(0, -11, -49),
+              rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
+            },
+            {
+              nameExitRoom: 'scene7',
+              positionExitRoom: new BABYLON.Vector3(0, -11, 49),
+              rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
+            }
+          ],
+          engine: engine
+        }
+        var scene6 = new CreateCustomScene(parameters6, scope)
+
+        var parameters7 = {
+          nameScene: 'scene7',
+          cameraPosition: new BABYLON.Vector3(-20, 7, 0),
+          cameraTarget: new BABYLON.Vector3(0, 5, 0),
+          fadeLevel: 0,
+          cubeMap: '7',
+          exits: [
+            {
+              nameExitRoom: 'scene6',
+              positionExitRoom: new BABYLON.Vector3(0, -11, -49),
+              rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
+            }
+          ],
+          engine: engine
+        }
+        var scene7 = new CreateCustomScene(parameters7, scope)
+
+        scope.currentScene = scene1.getScene();
+        if (scope.currentSceneName !== scope.currentScene.name) {
+          engine.scenes.map(v => {
+            if (v.name === scope.currentSceneName) {
+              scope.currentScene = v
+              scope.currentScene.activeCamera.attachControl(canvas, false)
+              scope.currentScene.isTransitionSceneOn = true
+            }
+          })
+        }
+        scope.currentScene.activeCamera.attachControl(canvas, false)
+
+        var changeVisibleBABYLONScene = this.changeVisibleBABYLONScene
+        scope.currentScene.executeWhenReady(function () {
+          changeVisibleBABYLONScene(true)
+        })
+        engine.runRenderLoop(function () {
+          if (scope.currentSceneName !== scope.currentScene.name) {
+            engine.scenes.map(v => {
+              if (v.name === scope.currentSceneName) {
+                scope.currentScene = v
+                scope.currentScene.activeCamera.attachControl(canvas, false)
+                scope.currentScene.isTransitionSceneOn = true
+              }
+            })
+          }
+          scope.currentScene.render()
+        })
+
+        window.addEventListener('resize', function () {
+          engine.resize()
+        })
+      }
+    })
+  }
+}
+</script>
+
 <style>
+.loadView {
+  width: 100%;
+  height: 100%;
+  backgroundColor: white;
+}
 #app {
+  position:absolute;
+  top:0;
+  right:0;
+  z-index:9999;
+  background: rgba(0, 160, 160, 0.75);
+  width:100%;
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
+  color: #94ccff
 }
 #nav {
-  padding: 30px;
+  padding: 30px
 }
 
 #nav a {
   font-weight: bold;
-  color: #2c3e50;
+  color: #759fcb
 }
 
 #nav a.router-link-exact-active {
-  color: #42b983;
+  color: #b94d26
 }
 </style>
