@@ -83,11 +83,11 @@ export default function CreateCustomScene (parameters, scope) {
     }
   })
 
-  this.scene = scene;
+  this.scene = scene
 }
 
-CreateCustomScene.prototype.constructor = CreateCustomScene;
+CreateCustomScene.prototype.constructor = CreateCustomScene
 
 CreateCustomScene.prototype.getScene = function () {
-  return this.scene;
-};
+  return this.scene
+}

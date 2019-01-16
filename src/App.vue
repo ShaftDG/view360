@@ -19,6 +19,12 @@ import LoadView from './views/LoadView.vue'
 import CreateCustomScene from './libs/CreateCustomScene'
 
 export default {
+  // props: {
+  //   initialCurrentSceneName: {
+  //     type: String,
+  //     default: 'scene1'
+  //   }
+  // },
   data: function () {
     return {
       isVisibleBABYLONScene: false,
@@ -32,7 +38,6 @@ export default {
     onChangeLocation (value) {
       this.currentScene.isTransitionSceneOff = true
       this.tempSceneName = value
-      // this.currentSceneName = value
     },
     onLoadedChildren (value) {
       this.changeVisibleVUEView(value)
@@ -212,7 +217,7 @@ export default {
         }
         var scene7 = new CreateCustomScene(parameters7, scope)
 
-        scope.currentScene = scene1.getScene();
+        scope.currentScene = scene1.getScene()
         if (scope.currentSceneName !== scope.currentScene.name) {
           engine.scenes.map(v => {
             if (v.name === scope.currentSceneName) {

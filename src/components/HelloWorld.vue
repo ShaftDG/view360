@@ -1,7 +1,7 @@
 <template>
   <div class="hello">
     <h1>{{greeting}}</h1>
-    <select v-model="selected" @change="onChange()">
+    <select v-model=selected @change="onChange()">
       <option v-for="option in options" v-bind:value="option.value" :key="option.value">
         {{ option.text }}
       </option>
@@ -15,6 +15,7 @@
 <script>
 export default {
   name: 'HelloWorld',
+  props: [ 'msg', 'num', 'location' ],
   data: function () {
     return {
       greeting: this.num + '. ' + this.msg,
@@ -30,10 +31,10 @@ export default {
       ]
     }
   },
-  props: {
-    msg: String,
-    num: String,
-    location: String
+  watch: {
+    location: function (val) {
+      this.selected = val
+    }
   },
   methods: {
     onChange () {
