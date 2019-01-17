@@ -4,7 +4,10 @@
       <router-link to='/'>Home</router-link> |
       <router-link to='/about'>About</router-link>
     </div>
-    <router-view :location=currentSceneName @selectedLocation="onChangeLocation" />
+    <router-view
+      :location="currentSceneName"
+      :locations="scenes"
+      @selectedLocation="onChangeLocation" />
   </div>
   <div v-else class="loadView">
     <LoadView/>
@@ -30,6 +33,15 @@ export default {
       isVisibleBABYLONScene: false,
       isVisibleVUEView: false,
       currentSceneName: 'scene1',
+      scenes: [
+        { text: 'scene1', value: 'scene1' },
+        { text: 'scene2', value: 'scene2' },
+        { text: 'scene3', value: 'scene3' },
+        { text: 'scene4', value: 'scene4' },
+        { text: 'scene5', value: 'scene5' },
+        { text: 'scene6', value: 'scene6' },
+        { text: 'scene7', value: 'scene7' }
+      ],
       currentScene: null,
       tempSceneName: null
     }
@@ -73,6 +85,7 @@ export default {
           'gl_FragColor = baseColor;' +
           '}'
 
+        var scenesMap = []
         var parameters1 = {
           nameScene: 'scene1',
           cameraPosition: new BABYLON.Vector3(0, 7, 20),
@@ -89,6 +102,7 @@ export default {
           engine: engine
         }
         var scene1 = new CreateCustomScene(parameters1, scope)
+        scenesMap = [ ...scenesMap, scene1 ]
 
         var parameters2 = {
           nameScene: 'scene2',
@@ -106,6 +120,7 @@ export default {
           engine: engine
         }
         var scene2 = new CreateCustomScene(parameters2, scope)
+        scenesMap = [ ...scenesMap, scene2 ]
 
         var parameters3 = {
           nameScene: 'scene3',
@@ -133,6 +148,7 @@ export default {
           engine: engine
         }
         var scene3 = new CreateCustomScene(parameters3, scope)
+        scenesMap = [ ...scenesMap, scene3 ]
 
         var parameters4 = {
           nameScene: 'scene4',
@@ -155,6 +171,7 @@ export default {
           engine: engine
         }
         var scene4 = new CreateCustomScene(parameters4, scope)
+        scenesMap = [ ...scenesMap, scene4 ]
 
         var parameters5 = {
           nameScene: 'scene5',
@@ -177,6 +194,7 @@ export default {
           engine: engine
         }
         var scene5 = new CreateCustomScene(parameters5, scope)
+        scenesMap = [ ...scenesMap, scene5 ]
 
         var parameters6 = {
           nameScene: 'scene6',
@@ -199,6 +217,7 @@ export default {
           engine: engine
         }
         var scene6 = new CreateCustomScene(parameters6, scope)
+        scenesMap = [ ...scenesMap, scene6 ]
 
         var parameters7 = {
           nameScene: 'scene7',
@@ -216,6 +235,7 @@ export default {
           engine: engine
         }
         var scene7 = new CreateCustomScene(parameters7, scope)
+        scenesMap = [ ...scenesMap, scene7 ]
 
         scope.currentScene = scene1.getScene()
         if (scope.currentSceneName !== scope.currentScene.name) {
@@ -233,6 +253,7 @@ export default {
         scope.currentScene.executeWhenReady(function () {
           changeVisibleBABYLONScene(true)
         })
+        console.log(scenesMap)
         engine.runRenderLoop(function () {
           if (scope.currentSceneName !== scope.currentScene.name) {
             engine.scenes.map(v => {

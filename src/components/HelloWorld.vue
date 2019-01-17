@@ -1,46 +1,35 @@
 <template>
   <div class="hello">
     <h1>{{greeting}}</h1>
-    <select v-model=selected @change="onChange()">
-      <option v-for="option in options" v-bind:value="option.value" :key="option.value">
-        {{ option.text }}
-      </option>
-    </select>
+    <shaft-select :selected="location" :options="locations" @change="onChange"></shaft-select>
+    <!--<select v-model="selected" @change="onChange()">-->
+      <!--<option-->
+        <!--v-for="option in options"-->
+        <!--v-bind:value="option.value"-->
+        <!--:key="option.value">-->
+        <!--{{ option.text }}-->
+      <!--</option>-->
+    <!--</select>-->
     <div>
-     <h2>Choosen location: {{ selected }}</h2>
+     <h2>Choosen location: {{ location }}</h2>
+     <shaft-input v-model="greeting"></shaft-input>
     </div>
   </div>
 </template>
 
 <script>
+
 export default {
   name: 'HelloWorld',
-  props: [ 'msg', 'num', 'location' ],
+  props: [ 'msg', 'num', 'location', 'locations' ],
   data: function () {
     return {
-      greeting: this.num + '. ' + this.msg,
-      selected: this.location, // value
-      options: [
-        { text: 'scene1', value: 'scene1' },
-        { text: 'scene2', value: 'scene2' },
-        { text: 'scene3', value: 'scene3' },
-        { text: 'scene4', value: 'scene4' },
-        { text: 'scene5', value: 'scene5' },
-        { text: 'scene6', value: 'scene6' },
-        { text: 'scene7', value: 'scene7' }
-      ]
-    }
-  },
-  watch: {
-    location: function (val) {
-      this.selected = val
+      greeting: this.num + '. ' + this.msg
     }
   },
   methods: {
-    onChange () {
-      this.$emit('selectedLocation', this.selected)
-      // console.log(11111111)
-      // this.$parent.changeVisibleVUEView(true)
+    onChange (value) {
+      this.$emit('selectedLocation', value)
     }
   }
 }
