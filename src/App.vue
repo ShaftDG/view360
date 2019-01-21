@@ -7,7 +7,13 @@
     <router-view
       :location="currentSceneName"
       :locations="scenes"
-      @selectedLocation="onChangeLocation" />
+      @selectedLocation="onChangeLocation"
+      @onStartTest="onStartTest"
+      @onEndTest="onEndTest"
+      :resultTest="resultTest"
+      :numElements="numElements"
+      :testMode="testMode"
+    />
   </div>
   <div v-else class="loadView">
     <LoadView/>
@@ -32,6 +38,11 @@ export default {
     return {
       isVisibleBABYLONScene: false,
       isVisibleVUEView: false,
+      testMode: false,
+      testStarted: false,
+      testEnded: !this.testStarted,
+      numElements: 0,
+      resultTest: 0,
       currentSceneName: 'scene1',
       scenes: [
         { text: 'scene1', value: 'scene1' },
@@ -48,6 +59,7 @@ export default {
   },
   methods: {
     onChangeLocation (value) {
+      this.onEndTest (false)
       this.currentScene.isTransitionSceneOff = true
       this.tempSceneName = value
     },
@@ -60,6 +72,37 @@ export default {
     },
     changeVisibleVUEView (value) {
       this.isVisibleVUEView = value
+    },
+    onStartTest (value) {
+      if (!this.testStarted) {
+        this.testMode = value
+        this.testEnded = !value
+        this.numElements = 0
+        this.currentScene.meshes.map(v => {
+          if (v.name.search(/interactiveElements\w*/) !== -1) {
+            if (v.visibility) {
+              this.numElements += 1
+            }
+          }
+        })
+        this.resultTest = 0
+      }
+    },
+    onEndTest (value) {
+      if (this.testMode) {
+        this.testMode = value
+        this.testStarted = value
+        this.testEnded = !value
+        console.log(111111111111)
+        this.setVisibleElementsTest(true)
+      }
+    },
+    setVisibleElementsTest (value) {
+      this.currentScene.meshes.map(v => {
+        if (v.name.search(/interactiveElements\w*/) !== -1) {
+            v.visibility = value
+        }
+      })
     }
   },
   components: {
@@ -99,6 +142,18 @@ export default {
               rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
             }
           ],
+          interactiveElements: [
+            {
+              nameElement: 'tv',
+              positionElement: new BABYLON.Vector3(-46, 0, 24),
+              rotationElement: new BABYLON.Vector3(0, -Math.PI / 2, 0)
+            },
+            {
+              nameElement: 'bed',
+              positionElement: new BABYLON.Vector3(46, -20, 46),
+              rotationElement: new BABYLON.Vector3(0, Math.PI / 2, 0)
+            }
+          ],
           engine: engine
         }
         var scene1 = new CreateCustomScene(parameters1, scope)
@@ -117,6 +172,7 @@ export default {
               rotationExitRoom: new BABYLON.Vector3(0, Math.PI / 2, 0.07)
             }
           ],
+          interactiveElements: [],
           engine: engine
         }
         var scene2 = new CreateCustomScene(parameters2, scope)
@@ -145,6 +201,7 @@ export default {
               rotationExitRoom: new BABYLON.Vector3(0, Math.PI / 2, 0.07)
             }
           ],
+          interactiveElements: [],
           engine: engine
         }
         var scene3 = new CreateCustomScene(parameters3, scope)
@@ -168,6 +225,7 @@ export default {
               rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
             }
           ],
+          interactiveElements: [],
           engine: engine
         }
         var scene4 = new CreateCustomScene(parameters4, scope)
@@ -191,6 +249,7 @@ export default {
               rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
             }
           ],
+          interactiveElements: [],
           engine: engine
         }
         var scene5 = new CreateCustomScene(parameters5, scope)
@@ -214,6 +273,7 @@ export default {
               rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
             }
           ],
+          interactiveElements: [],
           engine: engine
         }
         var scene6 = new CreateCustomScene(parameters6, scope)
@@ -232,12 +292,13 @@ export default {
               rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
             }
           ],
+          interactiveElements: [],
           engine: engine
         }
         var scene7 = new CreateCustomScene(parameters7, scope)
         scenesMap = [ ...scenesMap, scene7 ]
 
-        scope.currentScene = scene1.getScene()
+        scope.currentScene = scene1
         if (scope.currentSceneName !== scope.currentScene.name) {
           engine.scenes.map(v => {
             if (v.name === scope.currentSceneName) {
@@ -253,7 +314,6 @@ export default {
         scope.currentScene.executeWhenReady(function () {
           changeVisibleBABYLONScene(true)
         })
-        console.log(scenesMap)
         engine.runRenderLoop(function () {
           if (scope.currentSceneName !== scope.currentScene.name) {
             engine.scenes.map(v => {

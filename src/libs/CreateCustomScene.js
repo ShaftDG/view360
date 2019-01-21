@@ -5,7 +5,7 @@ export default function CreateCustomScene (parameters, scope) {
 
   var scene = new BABYLON.Scene(parameters.engine)
   scene.name = parameters.nameScene
-  scene.clearColor = new BABYLON.Color4(0.3,0.3,0.4, 0.75)
+  scene.clearColor = new BABYLON.Color4(0.3, 0.3, 0.4, 0.75)
 
   var skybox = BABYLON.Mesh.CreateBox('skyBox', 100.0, scene)
   var skyboxMaterial = new BABYLON.StandardMaterial('skyBox', scene)
@@ -58,6 +58,88 @@ export default function CreateCustomScene (parameters, scope) {
     button.onPointerUpObservable.add (function (a, b) {
       scene.isTransitionSceneOff = true
       scope.tempSceneName = b.target.name.split('_')[1]
+      scope.onEndTest(false)
+    })
+  }
+  // for (var j = 0; j < parameters.interactiveElements.length; j++) {
+  //   var interactiveElement = BABYLON.MeshBuilder.CreatePlane('interactiveElements_' + parameters.interactiveElements[j].nameElement, { width: 7, height: 4 })
+  //   interactiveElement.position = parameters.interactiveElements[j].positionElement
+  //   interactiveElement.rotation = parameters.interactiveElements[j].rotationElement
+  //   // var advancedTextureElement = BABYLON.GUI.AdvancedDynamicTexture.CreateForMesh(interactiveElement)
+  //   var advancedTextureElement = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI('UI')
+  //   var buttonElement = BABYLON.GUI.Button.CreateImageOnlyButton('but_' + parameters.interactiveElements[j].nameElement, 'textures/arrowUp.png')
+  //   buttonElement.width = 0.05
+  //   buttonElement.height = 0.05
+  //   buttonElement.thickness = 0
+  //   advancedTextureElement.addControl(buttonElement)
+  //
+  //   var nodePosition = new BABYLON.AbstractMesh('')
+  //   nodePosition.position = parameters.interactiveElements[j].positionElement
+  //   buttonElement.linkWithMesh(nodePosition)
+  //
+  //   buttonElement.onPointerUpObservable.add (function (a, b) {
+  //     console.log('!1111111111111')
+  //   })
+  // }
+  BABYLON.Effect.ShadersStore['interactiveElementVertexShader'] = '\r\n' +
+    'precision highp float;\r\n' +
+    '// Attributes\r\n' +
+    'attribute vec3 position;\r\n' +
+    'attribute vec2 uv;\r\n' +
+    '// Uniforms\r\n' +
+    'uniform mat4 worldViewProjection;\r\n' +
+    '// Varying\r\n' +
+    'varying vec2 vUV;\r\n' +
+    'void main(void) {\r\n' +
+    '    gl_Position = worldViewProjection * vec4(position, 1.0);\r\n' +
+    '    vUV = uv;\r\n' +
+    '}\r\n'
+  BABYLON.Effect.ShadersStore['interactiveElementFragmentShader'] = '\r\n' +
+    'precision highp float;\r\n' +
+    'varying vec2 vUV;\r\n' +
+    'uniform sampler2D textureSampler;\r\n' +
+    'void main(void) {\r\n' +
+    '    gl_FragColor = texture2D(textureSampler, vUV);\r\n' +
+    // '    if (gl_FragColor.r <= 0.05 ) discard;\r\n' +
+    '}\r\n'
+
+  scope.numElements = parameters.interactiveElements.length
+  var manager = new BABYLON.GUI.GUI3DManager(scene)
+  for (var j = 0; j < parameters.interactiveElements.length; j++) {
+    var interactiveElement = BABYLON.MeshBuilder.CreatePlane('interactiveElements_' + parameters.interactiveElements[j].nameElement, { width: 14, height: 14 })
+    interactiveElement.setPositionWithLocalVector(parameters.interactiveElements[j].rotationElement)
+    interactiveElement.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL
+    var materialButton = new BABYLON.ShaderMaterial('shader', scene, {
+      vertex: 'interactiveElement',
+      fragment: 'interactiveElement'
+    },
+    {
+      needAlphaBlending: true,
+      attributes: ['position', 'normal', 'uv'],
+      uniforms: ['world', 'worldView', 'worldViewProjection', 'view', 'projection'],
+      samplers: ['textureSampler']
+    })
+    var elementTexture = new BABYLON.Texture('textures/element.png', scene)
+    materialButton.setTexture('textureSampler', elementTexture)
+
+    // var materialButton = new BABYLON.StandardMaterial('materialButton', scene)
+    // materialButton.diffuseTexture = new BABYLON.Texture('textures/arrowUp.png', scene)
+    // materialButton.specularColor = new BABYLON.Color3(0, 0, 0)
+    // materialButton.disableLighting = true
+    interactiveElement.material = materialButton
+    var nodePosition = new BABYLON.TransformNode('')
+    nodePosition.position = parameters.interactiveElements[j].positionElement
+    var pushButton = new BABYLON.GUI.MeshButton3D(interactiveElement, 'button3D_' + parameters.interactiveElements[j].nameElement)
+    manager.addControl(pushButton)
+    pushButton.linkToTransformNode(nodePosition)
+
+    pushButton.onPointerUpObservable.add (function (a, b) {
+      if (scope.testStarted) {
+        scope.resultTest += 1
+        if (!b.target.mesh.visibility) {
+          b.target.mesh.visibility = !b.target.mesh.visibility
+        }
+      }
     })
   }
 
@@ -80,14 +162,30 @@ export default function CreateCustomScene (parameters, scope) {
       } else {
         fadeLevel += 0.05
       }
+    } else if (scope.testMode && !scope.testStarted) {
+      scene.meshes.map(v => {
+        if (v.name.search(/interactiveElements\w*/) !== -1) {
+          // console.log(v.name)
+          v.visibility = false
+        }
+      })
+      scope.testStarted = true
+    } else {
+      var count = 0
+      scene.meshes.map(v => {
+        if (v.name.search(/interactiveElements\w*/) !== -1) {
+          if (v.visibility) {
+            count++
+          }
+        }
+      })
+      if (count >= parameters.interactiveElements.length) {
+        scope.testMode = false
+        scope.testStarted = false
+        scope.testEnded = !scope.testStarted
+      }
     }
   })
 
-  this.scene = scene
-}
-
-CreateCustomScene.prototype.constructor = CreateCustomScene
-
-CreateCustomScene.prototype.getScene = function () {
-  return this.scene
+  return scene
 }

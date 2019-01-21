@@ -1,29 +1,39 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png"/>
-    <HelloWorld
-      msg="Welcome to Your Vue.js App! Choose location."
-      num="1234"
+    <img alt="Vue logo" src="../assets/logo.png" height="64px" width="64px"/>
+    <Main
+      :numElements="numElements"
+      :resultTest="resultTest"
+      :testMode="testMode"
       :location="location"
       :locations="locations"
-      @selectedLocation="onChangeLocation"/>
+      @selectedLocation="onChangeLocation"
+      @onStartTest="onStartTest"
+      @onEndTest="onEndTest"
+    />
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+import Main from '@/components/Main.vue'
 
 export default {
   name: 'home',
   components: {
-    HelloWorld
+    Main
   },
-  props: [ 'location', 'locations' ],
+  props: [ 'location', 'locations', 'numElements', 'resultTest', 'testMode' ],
   methods: {
     onChangeLocation (value) {
       this.$emit('selectedLocation', value)
       // this.$parent.changeVisibleVUEView(true)
+    },
+    onStartTest (value) {
+      this.$emit('onStartTest', value)
+    },
+    onEndTest (value) {
+      this.$emit('onEndTest', value)
     }
   }
 }
