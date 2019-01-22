@@ -14,6 +14,14 @@
       :numElements="numElements"
       :testMode="testMode"
     />
+    <button id="show-modal" @click="showModal = true">Show Modal</button>
+    <shaft-modal v-if="showModal" @close="showModal = false">
+      <!--
+        you can use custom content here to overwrite
+        default content
+      -->
+      <h3 slot="header">custom header</h3>
+    </shaft-modal>
   </div>
   <div v-else class="loadView">
     <LoadView/>
@@ -54,7 +62,8 @@ export default {
         { text: 'scene7', value: 'scene7' }
       ],
       currentScene: null,
-      tempSceneName: null
+      tempSceneName: null,
+      showModal: false
     }
   },
   methods: {
@@ -93,14 +102,13 @@ export default {
         this.testMode = value
         this.testStarted = value
         this.testEnded = !value
-        console.log(111111111111)
         this.setVisibleElementsTest(true)
       }
     },
     setVisibleElementsTest (value) {
       this.currentScene.meshes.map(v => {
         if (v.name.search(/interactiveElements\w*/) !== -1) {
-            v.visibility = value
+          v.visibility = value
         }
       })
     }
@@ -326,7 +334,6 @@ export default {
           }
           scope.currentScene.render()
         })
-
         window.addEventListener('resize', function () {
           engine.resize()
         })

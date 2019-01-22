@@ -1,24 +1,16 @@
 <template>
   <div class="hello">
-    <h2 v-if="showMsg">{{greeting}}</h2>
+    <span>{{msg}}</span>
     <shaft-select
       :selected="location"
       :options="locations"
-      @change="onChange"
+      @change="onChange($event)"
     ></shaft-select>
-    <!--<select v-model="selected" @change="onChange()">-->
-      <!--<option-->
-        <!--v-for="option in options"-->
-        <!--v-bind:value="option.value"-->
-        <!--:key="option.value">-->
-        <!--{{ option.text }}-->
-      <!--</option>-->
-    <!--</select>-->
     <div>
-     <h2>Choosen location: {{ location }}</h2>
-     <!--<shaft-input v-model="greeting"></shaft-input>-->
-     <shaft-button v-model="beginTest" @click="onStartTest">Begin test</shaft-button>
-     <shaft-button v-model="endTest" @click="onEndTest">End test</shaft-button>
+     <!--<shaft-input v-model="msg"></shaft-input>-->
+     <p v-if="showMsg">{{greeting}}</p>
+     <shaft-button @click="onStartTest($event)">Begin test</shaft-button>
+     <shaft-button @click="onEndTest($event)">End test</shaft-button>
     </div>
   </div>
 </template>
@@ -30,9 +22,9 @@ export default {
   props: [ 'numElements', 'resultTest', 'testMode', 'location', 'locations' ],
   data: function () {
     return {
-      // greeting: this.resultTest + ' correct answers out of ' + this.numElements,
       beginTest: true,
-      endTest: false
+      endTest: false,
+      msg: 'Choosen location:'
     }
   },
   computed: {
@@ -72,5 +64,10 @@ li {
 }
 a {
   color: #42b983;
+}
+span, p {
+  color: #fff;
+  font-size: 24px;
+  font-family: '微软雅黑', arail
 }
 </style>
