@@ -9,8 +9,8 @@
     <div>
      <!--<shaft-input v-model="msg"></shaft-input>-->
      <p v-if="showMsg">{{greeting}}</p>
-     <shaft-button @click="onStartTest($event)">Begin test</shaft-button>
-     <shaft-button @click="onEndTest($event)">End test</shaft-button>
+     <shaft-button @click="onStartTest(true)">Begin test</shaft-button>
+     <shaft-button @click="onEndTest(false)">End test</shaft-button>
     </div>
   </div>
 </template>

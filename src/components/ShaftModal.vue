@@ -1,27 +1,27 @@
 <template>
   <transition name="modal">
-    <div class="modal-mask">
+    <div class="modal-mask" @click="callback">
       <div class="modal-wrapper">
-        <div class="modal-container">
-
+        <div class="modal-container"
+             :class="type">
           <div class="modal-header">
             <slot name="header">
-              default header
+              <!--default header-->
             </slot>
           </div>
 
           <div class="modal-body">
             <slot name="body">
-              default body
+              <!--default body-->
             </slot>
           </div>
 
           <div class="modal-footer">
             <slot name="footer">
-              default footer
-              <button class="modal-default-button" @click="$emit('close')">
-                OK
-              </button>
+              <!--default footer-->
+              <!--<button class="modal-default-button" @click="$emit('close')">-->
+                <!--OK-->
+              <!--</button>-->
             </slot>
           </div>
         </div>
@@ -32,7 +32,15 @@
 
 <script>
 export default {
-  name: 'shaft-modal'
+  name: 'shaft-modal',
+  props: {
+    type: String
+  },
+  methods: {
+    callback: function () {
+      this.$emit('close')
+    }
+  }
 }
 </script>
 
@@ -55,9 +63,10 @@ export default {
   }
 
   .modal-container {
-    width: 300px;
+    width: 75%;
+    height: 75%;
     margin: 0px auto;
-    padding: 20px 30px;
+    padding: 10px 15px;
     background-color: #fff;
     border-radius: 2px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
@@ -65,13 +74,33 @@ export default {
     font-family: Helvetica, Arial, sans-serif;
   }
 
-  .modal-header h3 {
-    margin-top: 0;
-    color: #42b983;
+  .modal-container-congratulations {
+    width: 40%;
+    height: 25%;
+    margin: 0px auto;
+    padding: 10px 15px;
+    background-color: rgba(0, 0, 0, .25);
+    border-radius: 2px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
+    transition: all .3s ease;
+    font-size: 24px;
+    color: #ade6ff;
+    font-family: Helvetica, Arial, sans-serif;
   }
 
+  .modal-header{
+    height: 5%;
+    margin-top: 5px;
+    color: #42b983;
+  }
+  .modal-footer{
+    height: 5%;
+    margin-top: 10px;
+    color: #42b983;
+  }
   .modal-body {
-    margin: 20px 0;
+    height: 85%;
+    margin: 0;
   }
 
   .modal-default-button {

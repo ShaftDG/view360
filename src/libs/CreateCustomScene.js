@@ -109,6 +109,9 @@ export default function CreateCustomScene (parameters, scope) {
     var interactiveElement = BABYLON.MeshBuilder.CreatePlane('interactiveElements_' + parameters.interactiveElements[j].nameElement, { width: 14, height: 14 })
     interactiveElement.setPositionWithLocalVector(parameters.interactiveElements[j].rotationElement)
     interactiveElement.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL
+    interactiveElement.userData = {
+      elemnentURL: parameters.interactiveElements[j].url
+    }
     var materialButton = new BABYLON.ShaderMaterial('shader', scene, {
       vertex: 'interactiveElement',
       fragment: 'interactiveElement'
@@ -139,6 +142,11 @@ export default function CreateCustomScene (parameters, scope) {
         if (!b.target.mesh.visibility) {
           b.target.mesh.visibility = !b.target.mesh.visibility
         }
+      } else {
+        scope.showModal = true
+        scope.nameElement = b.target.mesh.name
+        console.log(b.target.mesh.userData.elemnentURL)
+        scope.iframe.src = b.target.mesh.userData.elemnentURL
       }
     })
   }
@@ -180,7 +188,7 @@ export default function CreateCustomScene (parameters, scope) {
         }
       })
       if (count >= parameters.interactiveElements.length) {
-        scope.testMode = false
+      //  scope.testMode = false
         scope.testStarted = false
         scope.testEnded = !scope.testStarted
       }

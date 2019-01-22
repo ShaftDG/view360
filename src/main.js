@@ -2,7 +2,8 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import '@/components/shaftGlobals'
+import '@/components/shaftGlobalsComponents'
+// import '@/directives/shaftGlobalsDirectives'
 
 Vue.config.productionTip = false
 

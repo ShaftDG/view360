@@ -14,13 +14,27 @@
       :numElements="numElements"
       :testMode="testMode"
     />
-    <button id="show-modal" @click="showModal = true">Show Modal</button>
-    <shaft-modal v-if="showModal" @close="showModal = false">
+    <!--<shaft-button @click="showModal = true">Show Modal</shaft-button>-->
+    <shaft-modal v-if="showModal"
+                 :type="'modal-container'"
+                 @close="showModal = false">
       <!--
         you can use custom content here to overwrite
         default content
       -->
-      <h3 slot="header">custom header</h3>
+      <h3 slot="header">{{nameElement}}</h3>
+      <!--<iframe slot="body" src="https://ru.vuejs.org/v2/guide/components.html"-->
+      <iframe id="modalIframe" slot="body" :src="iframe.src"
+              width="100%" height="100%" frameborder="0" allowfullscreen>
+      </iframe>
+    </shaft-modal>
+    <shaft-modal v-if="testEnded && testMode"
+                 :type="'modal-container-congratulations'"
+                 @close="onEndTest">
+      <div slot="body">
+        <h1>Congratulations!</h1>
+        <h2>You correctly marked {{resultTest}} items out of {{numElements}}</h2>
+      </div>
     </shaft-modal>
   </div>
   <div v-else class="loadView">
@@ -63,7 +77,13 @@ export default {
       ],
       currentScene: null,
       tempSceneName: null,
-      showModal: false
+      showModal: false,
+      nameElement: '',
+      iframe: {
+        src: 'http://192.168.1.55:8080',
+        style: null,
+        wrapperStyle: null,
+      }
     }
   },
   methods: {
@@ -154,12 +174,14 @@ export default {
             {
               nameElement: 'tv',
               positionElement: new BABYLON.Vector3(-46, 0, 24),
-              rotationElement: new BABYLON.Vector3(0, -Math.PI / 2, 0)
+              rotationElement: new BABYLON.Vector3(0, -Math.PI / 2, 0),
+              url: 'http://81.25.47.128/JewelSlot/'
             },
             {
               nameElement: 'bed',
               positionElement: new BABYLON.Vector3(46, -20, 46),
-              rotationElement: new BABYLON.Vector3(0, Math.PI / 2, 0)
+              rotationElement: new BABYLON.Vector3(0, Math.PI / 2, 0),
+              url: 'http://192.168.1.55:8080'
             }
           ],
           engine: engine
