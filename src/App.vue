@@ -1,20 +1,29 @@
 <template>
   <div v-if="isVisibleBABYLONScene" id='app'>
-    <div id='nav'>
-      <router-link to='/'>Home</router-link> |
-      <router-link to='/about'>About</router-link>
-    </div>
-    <router-view
-      :location="currentSceneName"
-      :locations="scenes"
-      @selectedLocation="onChangeLocation"
-      @onStartTest="onStartTest"
-      @onEndTest="onEndTest"
-      :resultTest="resultTest"
-      :numElements="numElements"
-      :testMode="testMode"
-    />
-    <!--<shaft-button @click="showModal = true">Show Modal</shaft-button>-->
+    <shaft-elastic-header
+      :startMove="currentScene"
+    >
+      <template slot="header">
+        <h1>360View</h1>
+      </template>
+      <template slot="content">
+        <!--<div id='nav'>-->
+          <!--<router-link to='/'>Home</router-link> |-->
+          <!--<router-link to='/about'>About</router-link>-->
+        <!--</div>-->
+        <router-view
+          :location="currentSceneName"
+          :locations="scenes"
+          @selectedLocation="onChangeLocation"
+          @onStartTest="onStartTest"
+          @onEndTest="onEndTest"
+          :resultTest="resultTest"
+          :numElements="numElements"
+          :testMode="testMode"
+        />
+        <!--<shaft-button @click="showModal = true">Show Modal</shaft-button>-->
+      </template>
+    </shaft-elastic-header>
     <shaft-modal v-if="showModal"
                  :type="'modal-container'"
                  @close="showModal = false">
@@ -82,7 +91,7 @@ export default {
       iframe: {
         src: 'http://192.168.1.55:8080',
         style: null,
-        wrapperStyle: null,
+        wrapperStyle: null
       }
     }
   },
@@ -376,7 +385,7 @@ export default {
   top:0;
   right:0;
   z-index:9999;
-  background: rgba(0, 160, 160, 0.75);
+  /*background: rgba(0, 160, 160, 0.75);*/
   width:100%;
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

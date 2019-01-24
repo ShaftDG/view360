@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" height="64px" width="64px"/>
+    <!--<img alt="Vue logo" src="../assets/logo.png" height="64px" width="64px"/>-->
     <Main
       :numElements="numElements"
       :resultTest="resultTest"

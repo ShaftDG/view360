@@ -11,6 +11,11 @@
      <p v-if="showMsg">{{greeting}}</p>
      <shaft-button @click="onStartTest(true)">Begin test</shaft-button>
      <shaft-button @click="onEndTest(false)">End test</shaft-button>
+      <shaft-dropdown :options="locations"
+                :selected="location"
+                @updateOption="onChange($event)"
+                :placeholder="'Select an Item'">
+      </shaft-dropdown>
     </div>
   </div>
 </template>
