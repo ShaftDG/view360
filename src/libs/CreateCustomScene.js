@@ -1,13 +1,13 @@
 import BABYLON from 'babylonjs'
+import AnimationArrow from './AnimationArrow'
 
-export default function CreateCustomScene (parameters, scope) {
-  var canvas = document.querySelector('#renderCanvas')
+export default function CreateCustomScene (parameters, scope, engine, canvas) {
 
-  var scene = new BABYLON.Scene(parameters.engine)
+  var scene = new BABYLON.Scene(engine)
   scene.name = parameters.nameScene
   scene.clearColor = new BABYLON.Color4(0.3, 0.3, 0.4, 0.75)
 
-  var skybox = BABYLON.Mesh.CreateBox('skyBox', 100.0, scene)
+  var skybox = BABYLON.MeshBuilder.CreateSphere('skyBox', { diameter: 2000 }, scene)
   var skyboxMaterial = new BABYLON.StandardMaterial('skyBox', scene)
   skyboxMaterial.backFaceCulling = false
   skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture('textures/skybox/' + parameters.cubeMap + '/', scene)
@@ -21,9 +21,9 @@ export default function CreateCustomScene (parameters, scope) {
   // scene.showFps()
   camera.setTarget(parameters.cameraTarget)
   // camera.attachControl(canvas, false)
+  camera.fov = 1.3
   camera.inertia = 0.5
-  camera.lowerRadiusLimit = 40
-  camera.upperRadiusLimit = 40
+  camera.lowerRadiusLimit = camera.upperRadiusLimit = camera.radius
   camera.lowerBetaLimit = 0
   camera.upperBetaLimit = 2.0
   camera.storeState()
@@ -44,10 +44,12 @@ export default function CreateCustomScene (parameters, scope) {
 
   scene.isTransitionSceneOff = false
   scene.isTransitionSceneOn = false
+
   for (var i = 0; i < parameters.exits.length; i++) {
-    var exitRoom = BABYLON.MeshBuilder.CreatePlane('exitRoom_' + parameters.exits[i].nameExitRoom, { width: 7, height: 4 })
+    var exitRoom = BABYLON.MeshBuilder.CreatePlane('exitRoom_' + parameters.exits[i].nameExitRoom, { width: 100, height: 80 })
     exitRoom.position = parameters.exits[i].positionExitRoom
     exitRoom.rotation = parameters.exits[i].rotationExitRoom
+    exitRoom.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL
     var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateForMesh(exitRoom)
     var button = BABYLON.GUI.Button.CreateImageOnlyButton('but_' + parameters.exits[i].nameExitRoom, 'textures/arrowUp.png')
     button.width = 1
@@ -55,32 +57,36 @@ export default function CreateCustomScene (parameters, scope) {
     button.thickness = 0
     advancedTexture.addControl(button)
 
-    button.onPointerUpObservable.add (function (a, b) {
+    var animation = AnimationArrow.call(exitRoom, new BABYLON.Vector3(exitRoom.position.x, exitRoom.position.y + 30, exitRoom.position.z), 30, scene)
+    button.userData = {
+      meshPlane: exitRoom,
+      animation: animation
+    }
+
+    button.onPointerEnterObservable.add(function (a, b) {
+      if (b.target.userData) {
+        b.target.userData.meshPlane.scaling = new BABYLON.Vector3(1.5, 1.5, 1.5)
+        scope.showHint = true
+        var stirng = b.target.userData.meshPlane.name
+        scope.textHint = stirng.split('_')[1].replace('-', ' ')
+      }
+      // b.target.userData.animation.stop()
+    })
+    button.onPointerOutObservable.add(function (a, b) {
+      if (b.target.userData) {
+        b.target.userData.meshPlane.scaling = new BABYLON.Vector3(1.0, 1.0, 1.0)
+        scope.showHint = false
+      }
+      // b.target.userData.animation.res()
+    })
+
+    button.onPointerClickObservable.add (function (a, b) {
       scene.isTransitionSceneOff = true
       scope.tempSceneName = b.target.name.split('_')[1]
       scope.onEndTest(false)
     })
   }
-  // for (var j = 0; j < parameters.interactiveElements.length; j++) {
-  //   var interactiveElement = BABYLON.MeshBuilder.CreatePlane('interactiveElements_' + parameters.interactiveElements[j].nameElement, { width: 7, height: 4 })
-  //   interactiveElement.position = parameters.interactiveElements[j].positionElement
-  //   interactiveElement.rotation = parameters.interactiveElements[j].rotationElement
-  //   // var advancedTextureElement = BABYLON.GUI.AdvancedDynamicTexture.CreateForMesh(interactiveElement)
-  //   var advancedTextureElement = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI('UI')
-  //   var buttonElement = BABYLON.GUI.Button.CreateImageOnlyButton('but_' + parameters.interactiveElements[j].nameElement, 'textures/arrowUp.png')
-  //   buttonElement.width = 0.05
-  //   buttonElement.height = 0.05
-  //   buttonElement.thickness = 0
-  //   advancedTextureElement.addControl(buttonElement)
-  //
-  //   var nodePosition = new BABYLON.AbstractMesh('')
-  //   nodePosition.position = parameters.interactiveElements[j].positionElement
-  //   buttonElement.linkWithMesh(nodePosition)
-  //
-  //   buttonElement.onPointerUpObservable.add (function (a, b) {
-  //     console.log('!1111111111111')
-  //   })
-  // }
+
   BABYLON.Effect.ShadersStore['interactiveElementVertexShader'] = '\r\n' +
     'precision highp float;\r\n' +
     '// Attributes\r\n' +
@@ -106,7 +112,7 @@ export default function CreateCustomScene (parameters, scope) {
   scope.numElements = parameters.interactiveElements.length
   var manager = new BABYLON.GUI.GUI3DManager(scene)
   for (var j = 0; j < parameters.interactiveElements.length; j++) {
-    var interactiveElement = BABYLON.MeshBuilder.CreatePlane('interactiveElements_' + parameters.interactiveElements[j].nameElement, { width: 14, height: 14 })
+    var interactiveElement = BABYLON.MeshBuilder.CreatePlane('interactiveElements_' + parameters.interactiveElements[j].nameElement, { width: 120, height: 120 })
     interactiveElement.setPositionWithLocalVector(parameters.interactiveElements[j].rotationElement)
     interactiveElement.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL
     interactiveElement.userData = {
@@ -135,6 +141,21 @@ export default function CreateCustomScene (parameters, scope) {
     var pushButton = new BABYLON.GUI.MeshButton3D(interactiveElement, 'button3D_' + parameters.interactiveElements[j].nameElement)
     manager.addControl(pushButton)
     pushButton.linkToTransformNode(nodePosition)
+
+    pushButton.onPointerEnterObservable.add(function (a, b) {
+      if (b.target.mesh) {
+        b.target.mesh.scaling = new BABYLON.Vector3(1.5, 1.5, 1.5)
+        scope.showHint = true
+        var stirng = b.target.mesh.name
+        scope.textHint = stirng.split('_')[1].replace('-', ' ')
+      }
+    })
+    pushButton.onPointerOutObservable.add(function (a, b) {
+      if (b.target.mesh) {
+        b.target.mesh.scaling = new BABYLON.Vector3(1.0, 1.0, 1.0)
+        scope.showHint = false
+      }
+    })
 
     pushButton.onPointerUpObservable.add (function (a, b) {
       if (scope.testStarted) {

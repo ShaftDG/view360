@@ -4,26 +4,36 @@
       :startMove="currentScene"
     >
       <template slot="header">
-        <h1>360View</h1>
+        <!--<router-view-->
+          <!--:location="currentSceneName"-->
+          <!--:locations="scenes"-->
+          <!--@selectedLocation="onChangeLocation"-->
+          <!--@onStartTest="onStartTest"-->
+          <!--@onEndTest="onEndTest"-->
+          <!--:resultTest="resultTest"-->
+          <!--:numElements="numElements"-->
+          <!--:testMode="testMode"-->
+        <!--/>-->
+
+        <p v-if="showMsg">{{greeting}}</p>
+        <!--<shaft-button @click="onStartTest(true)">Begin test</shaft-button>-->
+        <!--<shaft-button @click="onEndTest(false)">End test</shaft-button>-->
+        <!--<shaft-dropdown :options="locations"-->
+        <!--:selected="location"-->
+        <!--@updateOption="onChange($event)"-->
+        <!--:placeholder="'Select an Item'">-->
+        <!--</shaft-dropdown>-->
+        <shaft-navbar :options="scenes"
+                      :selected="currentSceneName"
+                      @updateOption="onChangeLocation($event)"
+                      :placeholder="'Select an Item'">
+        </shaft-navbar>
       </template>
-      <template slot="content">
-        <!--<div id='nav'>-->
-          <!--<router-link to='/'>Home</router-link> |-->
-          <!--<router-link to='/about'>About</router-link>-->
-        <!--</div>-->
-        <router-view
-          :location="currentSceneName"
-          :locations="scenes"
-          @selectedLocation="onChangeLocation"
-          @onStartTest="onStartTest"
-          @onEndTest="onEndTest"
-          :resultTest="resultTest"
-          :numElements="numElements"
-          :testMode="testMode"
-        />
-        <!--<shaft-button @click="showModal = true">Show Modal</shaft-button>-->
-      </template>
+      <!--<template slot="content"></template>-->
     </shaft-elastic-header>
+    <div class="hint" ref="hint" v-if="showHint">
+      {{textHint}}
+    </div>
     <shaft-modal v-if="showModal"
                  :type="'modal-container'"
                  @close="showModal = false">
@@ -55,16 +65,11 @@
 import BABYLON from 'babylonjs'
 import 'babylonjs-gui'
 import LoadView from './views/LoadView.vue'
+import ShaftNavbar from './components/ShaftNavbar'
 
 import CreateCustomScene from './libs/CreateCustomScene'
 
 export default {
-  // props: {
-  //   initialCurrentSceneName: {
-  //     type: String,
-  //     default: 'scene1'
-  //   }
-  // },
   data: function () {
     return {
       isVisibleBABYLONScene: false,
@@ -77,8 +82,8 @@ export default {
       currentSceneName: 'scene1',
       scenes: [
         { text: 'scene1', value: 'scene1' },
-        { text: 'scene2', value: 'scene2' },
-        { text: 'scene3', value: 'scene3' },
+        { text: 'living room', value: 'living-room' },
+        { text: 'kitchen', value: 'kitchen' },
         { text: 'scene4', value: 'scene4' },
         { text: 'scene5', value: 'scene5' },
         { text: 'scene6', value: 'scene6' },
@@ -87,6 +92,8 @@ export default {
       currentScene: null,
       tempSceneName: null,
       showModal: false,
+      showHint: false,
+      textHint: 'opening_scene',
       nameElement: '',
       iframe: {
         src: 'http://192.168.1.55:8080',
@@ -95,7 +102,22 @@ export default {
       }
     }
   },
+  computed: {
+    greeting: function () {
+      return this.resultTest + ' correct answers out of ' + this.numElements
+    },
+    showMsg: function () {
+      return this.testMode
+    }
+  },
   methods: {
+    onMoveMouseGlobal: function (e) {
+      var hint = this.$refs.hint
+      if (hint) {
+        e = e.changedTouches ? e.changedTouches[0] : e
+        hint.style.transform = 'translate(' + e.clientX + 'px, ' + (e.clientY - 40) + 'px)'
+      }
+    },
     onChangeLocation (value) {
       this.onEndTest (false)
       this.currentScene.isTransitionSceneOff = true
@@ -143,14 +165,22 @@ export default {
     }
   },
   components: {
-    LoadView
+    LoadView,
+    ShaftNavbar
+  },
+  created: function () {
+    window.addEventListener('mousemove',this.onMoveMouseGlobal);
+  },
+  destroyed: function () {
+    window.removeEventListener('mousemove', this.onMoveMouseGlobal);
   },
   mounted () {
+    this.hint = this.$refs.hint
     this.$nextTick(function () {
       // this.changeVisibleVUEView(true)
       if (BABYLON.Engine.isSupported()) {
         var scope = this
-        var canvas = document.querySelector('#renderCanvas')
+        var canvas = document.getElementById('renderCanvas')
         var engine = new BABYLON.Engine(canvas, true, { stencil: true }, false)
         engine.disableManifestCheck = true
 
@@ -174,167 +204,160 @@ export default {
           cubeMap: '1',
           exits: [
             {
-              nameExitRoom: 'scene3',
-              positionExitRoom: new BABYLON.Vector3(-5, -13, 49),
+              nameExitRoom: 'kitchen',
+              positionExitRoom: new BABYLON.Vector3(-5, -13, 940),
               rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
             }
           ],
           interactiveElements: [
             {
               nameElement: 'tv',
-              positionElement: new BABYLON.Vector3(-46, 0, 24),
-              rotationElement: new BABYLON.Vector3(0, -Math.PI / 2, 0),
+              positionElement: new BABYLON.Vector3(-460, 0, 24),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
               url: 'http://81.25.47.128/JewelSlot/'
             },
             {
               nameElement: 'bed',
-              positionElement: new BABYLON.Vector3(46, -20, 46),
-              rotationElement: new BABYLON.Vector3(0, Math.PI / 2, 0),
+              positionElement: new BABYLON.Vector3(460, -20, 46),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
               url: 'http://192.168.1.55:8080'
             }
-          ],
-          engine: engine
+          ]
         }
-        var scene1 = new CreateCustomScene(parameters1, scope)
+        var scene1 = new CreateCustomScene(parameters1, scope, engine, canvas)
         scenesMap = [ ...scenesMap, scene1 ]
 
         var parameters2 = {
-          nameScene: 'scene2',
+          nameScene: 'living-room',
           cameraPosition: new BABYLON.Vector3(20, 7, 0),
           cameraTarget: new BABYLON.Vector3(0, 5, 0),
           fadeLevel: 0,
-          cubeMap: '2',
+          cubeMap: 'living_room',
           exits: [
             {
-              nameExitRoom: 'scene3',
-              positionExitRoom: new BABYLON.Vector3(49, -11, -4),
-              rotationExitRoom: new BABYLON.Vector3(0, Math.PI / 2, 0.07)
+              nameExitRoom: 'kitchen',
+              positionExitRoom: new BABYLON.Vector3(940, -11, -4),
+              rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
             }
           ],
-          interactiveElements: [],
-          engine: engine
+          interactiveElements: []
         }
-        var scene2 = new CreateCustomScene(parameters2, scope)
+        var scene2 = new CreateCustomScene(parameters2, scope, engine, canvas)
         scenesMap = [ ...scenesMap, scene2 ]
 
         var parameters3 = {
-          nameScene: 'scene3',
-          cameraPosition: new BABYLON.Vector3(-20, 7, 0),
-          cameraTarget: new BABYLON.Vector3(0, 5, 0),
+          nameScene: 'kitchen',
+          cameraPosition: new BABYLON.Vector3(-200, 100, 100),
+          cameraTarget: new BABYLON.Vector3(0, 0, 0),
           fadeLevel: 0,
-          cubeMap: '3',
+          cubeMap: 'kitchen',
           exits: [
             {
               nameExitRoom: 'scene1',
-              positionExitRoom: new BABYLON.Vector3(-49, -11, -20),
-              rotationExitRoom: new BABYLON.Vector3(0, -Math.PI / 2, 0.1)
+              positionExitRoom: new BABYLON.Vector3(-10, -22, 940),
+              rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
             },
             {
-              nameExitRoom: 'scene2',
-              positionExitRoom: new BABYLON.Vector3(-10, -22, 49),
+              nameExitRoom: 'living-room',
+              positionExitRoom: new BABYLON.Vector3(-940, -11, -20),
               rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
             },
             {
               nameExitRoom: 'scene4',
-              positionExitRoom: new BABYLON.Vector3(49, -11, -25),
-              rotationExitRoom: new BABYLON.Vector3(0, Math.PI / 2, 0.07)
+              positionExitRoom: new BABYLON.Vector3(940, -11, -25),
+              rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
             }
           ],
-          interactiveElements: [],
-          engine: engine
+          interactiveElements: []
         }
-        var scene3 = new CreateCustomScene(parameters3, scope)
+        var scene3 = new CreateCustomScene(parameters3, scope, engine, canvas)
         scenesMap = [ ...scenesMap, scene3 ]
 
         var parameters4 = {
           nameScene: 'scene4',
           cameraPosition: new BABYLON.Vector3(-20, 7, 0),
-          cameraTarget: new BABYLON.Vector3(0, 5, 0),
+          cameraTarget: new BABYLON.Vector3(0, 0, 0),
           fadeLevel: 0,
           cubeMap: '4',
           exits: [
             {
-              nameExitRoom: 'scene3',
-              positionExitRoom: new BABYLON.Vector3(-49, -11, 0),
-              rotationExitRoom: new BABYLON.Vector3(0, -Math.PI / 2, 0)
+              nameExitRoom: 'kitchen',
+              positionExitRoom: new BABYLON.Vector3(-940, -11, 0),
+              rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
             },
             {
               nameExitRoom: 'scene5',
-              positionExitRoom: new BABYLON.Vector3(10, -11, -49),
+              positionExitRoom: new BABYLON.Vector3(10, -11, -940),
               rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
             }
           ],
-          interactiveElements: [],
-          engine: engine
+          interactiveElements: []
         }
-        var scene4 = new CreateCustomScene(parameters4, scope)
+        var scene4 = new CreateCustomScene(parameters4, scope, engine, canvas)
         scenesMap = [ ...scenesMap, scene4 ]
 
         var parameters5 = {
           nameScene: 'scene5',
           cameraPosition: new BABYLON.Vector3(-20, 7, 0),
-          cameraTarget: new BABYLON.Vector3(0, 5, 0),
+          cameraTarget: new BABYLON.Vector3(0, 0, 0),
           fadeLevel: 0,
           cubeMap: '5',
           exits: [
             {
               nameExitRoom: 'scene4',
-              positionExitRoom: new BABYLON.Vector3(15, -11, -49),
+              positionExitRoom: new BABYLON.Vector3(15, -11, -940),
               rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
             },
             {
               nameExitRoom: 'scene6',
-              positionExitRoom: new BABYLON.Vector3(15, -11, 49),
+              positionExitRoom: new BABYLON.Vector3(15, -11, 940),
               rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
             }
           ],
-          interactiveElements: [],
-          engine: engine
+          interactiveElements: []
         }
-        var scene5 = new CreateCustomScene(parameters5, scope)
+        var scene5 = new CreateCustomScene(parameters5, scope, engine, canvas)
         scenesMap = [ ...scenesMap, scene5 ]
 
         var parameters6 = {
           nameScene: 'scene6',
           cameraPosition: new BABYLON.Vector3(-20, 7, 0),
-          cameraTarget: new BABYLON.Vector3(0, 5, 0),
+          cameraTarget: new BABYLON.Vector3(0, 0, 0),
           fadeLevel: 0,
           cubeMap: '6',
           exits: [
             {
               nameExitRoom: 'scene5',
-              positionExitRoom: new BABYLON.Vector3(0, -11, -49),
+              positionExitRoom: new BABYLON.Vector3(0, -11, -940),
               rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
             },
             {
               nameExitRoom: 'scene7',
-              positionExitRoom: new BABYLON.Vector3(0, -11, 49),
+              positionExitRoom: new BABYLON.Vector3(0, -11, 940),
               rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
             }
           ],
-          interactiveElements: [],
-          engine: engine
+          interactiveElements: []
         }
-        var scene6 = new CreateCustomScene(parameters6, scope)
+        var scene6 = new CreateCustomScene(parameters6, scope, engine, canvas)
         scenesMap = [ ...scenesMap, scene6 ]
 
         var parameters7 = {
           nameScene: 'scene7',
           cameraPosition: new BABYLON.Vector3(-20, 7, 0),
-          cameraTarget: new BABYLON.Vector3(0, 5, 0),
+          cameraTarget: new BABYLON.Vector3(0, 0, 0),
           fadeLevel: 0,
           cubeMap: '7',
           exits: [
             {
               nameExitRoom: 'scene6',
-              positionExitRoom: new BABYLON.Vector3(0, -11, -49),
+              positionExitRoom: new BABYLON.Vector3(0, -11, -940),
               rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
             }
           ],
-          interactiveElements: [],
-          engine: engine
+          interactiveElements: []
         }
-        var scene7 = new CreateCustomScene(parameters7, scope)
+        var scene7 = new CreateCustomScene(parameters7, scope, engine, canvas)
         scenesMap = [ ...scenesMap, scene7 ]
 
         scope.currentScene = scene1
@@ -392,6 +415,20 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #94ccff
+}
+:root {
+  --width: 300px;
+}
+.hint {
+  position: absolute;
+  width: var(--width);
+  height: 10px;
+  top: 0px;
+  left: calc((var(--width) / 2) - var(--width));
+  font-size: 18pt;
+  text-shadow: 0 0 10px #101921, 0 0 15px #0c2638;
+  text-align: center;
+  color: #dfefff;
 }
 #nav {
   padding: 30px

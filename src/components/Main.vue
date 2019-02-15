@@ -1,29 +1,36 @@
 <template>
-  <div class="hello">
-    <span>{{msg}}</span>
-    <shaft-select
-      :selected="location"
-      :options="locations"
-      @change="onChange($event)"
-    ></shaft-select>
+  <div>
+    <!--<span>{{msg}}</span>-->
+    <!--<shaft-select-->
+      <!--:selected="location"-->
+      <!--:options="locations"-->
+      <!--@change="onChange($event)"-->
+    <!--&gt;</shaft-select>-->
     <div>
      <!--<shaft-input v-model="msg"></shaft-input>-->
      <p v-if="showMsg">{{greeting}}</p>
-     <shaft-button @click="onStartTest(true)">Begin test</shaft-button>
-     <shaft-button @click="onEndTest(false)">End test</shaft-button>
-      <shaft-dropdown :options="locations"
-                :selected="location"
-                @updateOption="onChange($event)"
-                :placeholder="'Select an Item'">
-      </shaft-dropdown>
+     <!--<shaft-button @click="onStartTest(true)">Begin test</shaft-button>-->
+     <!--<shaft-button @click="onEndTest(false)">End test</shaft-button>-->
+      <!--<shaft-dropdown :options="locations"-->
+                <!--:selected="location"-->
+                <!--@updateOption="onChange($event)"-->
+                <!--:placeholder="'Select an Item'">-->
+      <!--</shaft-dropdown>-->
+      <shaft-navbar :options="locations"
+                      :selected="location"
+                      @updateOption="onChange($event)"
+                      :placeholder="'Select an Item'">
+      </shaft-navbar>
     </div>
   </div>
 </template>
 
 <script>
 
+import ShaftNavbar from './ShaftNavbar'
 export default {
   name: 'Main',
+  components: { ShaftNavbar },
   props: [ 'numElements', 'resultTest', 'testMode', 'location', 'locations' ],
   data: function () {
     return {
