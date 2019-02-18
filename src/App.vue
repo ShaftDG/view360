@@ -1,36 +1,44 @@
 <template>
   <div v-if="isVisibleBABYLONScene" id='app'>
-    <shaft-elastic-header
-      :startMove="currentScene"
-    >
-      <template slot="header">
-        <!--<router-view-->
-          <!--:location="currentSceneName"-->
-          <!--:locations="scenes"-->
-          <!--@selectedLocation="onChangeLocation"-->
-          <!--@onStartTest="onStartTest"-->
-          <!--@onEndTest="onEndTest"-->
-          <!--:resultTest="resultTest"-->
-          <!--:numElements="numElements"-->
-          <!--:testMode="testMode"-->
-        <!--/>-->
+    <!--<shaft-elastic-header-->
+      <!--:startMove="currentScene"-->
+    <!--&gt;-->
+      <!--<template slot="header">-->
+        <!--&lt;!&ndash;<router-view&ndash;&gt;-->
+          <!--&lt;!&ndash;:location="currentSceneName"&ndash;&gt;-->
+          <!--&lt;!&ndash;:locations="scenes"&ndash;&gt;-->
+          <!--&lt;!&ndash;@selectedLocation="onChangeLocation"&ndash;&gt;-->
+          <!--&lt;!&ndash;@onStartTest="onStartTest"&ndash;&gt;-->
+          <!--&lt;!&ndash;@onEndTest="onEndTest"&ndash;&gt;-->
+          <!--&lt;!&ndash;:resultTest="resultTest"&ndash;&gt;-->
+          <!--&lt;!&ndash;:numElements="numElements"&ndash;&gt;-->
+          <!--&lt;!&ndash;:testMode="testMode"&ndash;&gt;-->
+        <!--&lt;!&ndash;/>&ndash;&gt;-->
 
-        <p v-if="showMsg">{{greeting}}</p>
-        <!--<shaft-button @click="onStartTest(true)">Begin test</shaft-button>-->
-        <!--<shaft-button @click="onEndTest(false)">End test</shaft-button>-->
-        <!--<shaft-dropdown :options="locations"-->
-        <!--:selected="location"-->
-        <!--@updateOption="onChange($event)"-->
-        <!--:placeholder="'Select an Item'">-->
-        <!--</shaft-dropdown>-->
-        <shaft-navbar :options="scenes"
-                      :selected="currentSceneName"
-                      @updateOption="onChangeLocation($event)"
-                      :placeholder="'Select an Item'">
-        </shaft-navbar>
-      </template>
-      <!--<template slot="content"></template>-->
-    </shaft-elastic-header>
+        <!--<p v-if="showMsg">{{greeting}}</p>-->
+        <!--&lt;!&ndash;<shaft-button @click="onStartTest(true)">Begin test</shaft-button>&ndash;&gt;-->
+        <!--&lt;!&ndash;<shaft-button @click="onEndTest(false)">End test</shaft-button>&ndash;&gt;-->
+        <!--&lt;!&ndash;<shaft-dropdown :options="locations"&ndash;&gt;-->
+        <!--&lt;!&ndash;:selected="location"&ndash;&gt;-->
+        <!--&lt;!&ndash;@updateOption="onChange($event)"&ndash;&gt;-->
+        <!--&lt;!&ndash;:placeholder="'Select an Item'">&ndash;&gt;-->
+        <!--&lt;!&ndash;</shaft-dropdown>&ndash;&gt;-->
+        <!--<shaft-navbar :options="scenes"-->
+                      <!--:selected="currentSceneName"-->
+                      <!--@updateOption="onChangeLocation($event)"-->
+                      <!--:placeholder="'Select an Item'">-->
+        <!--</shaft-navbar>-->
+      <!--</template>-->
+      <!--&lt;!&ndash;<template slot="content"></template>&ndash;&gt;-->
+    <!--</shaft-elastic-header>-->
+    <p v-if="showMsg">{{greeting}}</p>
+    <!--<shaft-button @click="onStartTest(true)">Begin test</shaft-button>-->
+    <!--<shaft-button @click="onEndTest(false)">End test</shaft-button>-->
+    <shaft-navbar :options="scenes"
+                  :selected="currentSceneName"
+                  @updateOption="onChangeLocation($event)"
+                  :placeholder="'Select an Item'">
+    </shaft-navbar>
     <div class="hint" ref="hint" v-if="showHint">
       {{textHint}}
     </div>
@@ -84,8 +92,8 @@ export default {
         { text: 'scene1', value: 'scene1' },
         { text: 'living room', value: 'living-room' },
         { text: 'kitchen', value: 'kitchen' },
-        { text: 'scene4', value: 'scene4' },
-        { text: 'scene5', value: 'scene5' },
+        { text: 'child room', value: 'child-room' },
+        { text: 'bathroom', value: 'bathroom' },
         { text: 'scene6', value: 'scene6' },
         { text: 'scene7', value: 'scene7' }
       ],
@@ -263,7 +271,7 @@ export default {
               rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
             },
             {
-              nameExitRoom: 'scene4',
+              nameExitRoom: 'child-room',
               positionExitRoom: new BABYLON.Vector3(940, -11, -25),
               rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
             }
@@ -274,11 +282,11 @@ export default {
         scenesMap = [ ...scenesMap, scene3 ]
 
         var parameters4 = {
-          nameScene: 'scene4',
+          nameScene: 'child-room',
           cameraPosition: new BABYLON.Vector3(-20, 7, 0),
           cameraTarget: new BABYLON.Vector3(0, 0, 0),
           fadeLevel: 0,
-          cubeMap: '4',
+          cubeMap: 'child_room',
           exits: [
             {
               nameExitRoom: 'kitchen',
@@ -286,7 +294,7 @@ export default {
               rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
             },
             {
-              nameExitRoom: 'scene5',
+              nameExitRoom: 'bathroom',
               positionExitRoom: new BABYLON.Vector3(10, -11, -940),
               rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
             }
@@ -297,14 +305,14 @@ export default {
         scenesMap = [ ...scenesMap, scene4 ]
 
         var parameters5 = {
-          nameScene: 'scene5',
+          nameScene: 'bathroom',
           cameraPosition: new BABYLON.Vector3(-20, 7, 0),
           cameraTarget: new BABYLON.Vector3(0, 0, 0),
           fadeLevel: 0,
-          cubeMap: '5',
+          cubeMap: 'bathroom',
           exits: [
             {
-              nameExitRoom: 'scene4',
+              nameExitRoom: 'child-room',
               positionExitRoom: new BABYLON.Vector3(15, -11, -940),
               rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
             },
@@ -316,8 +324,8 @@ export default {
           ],
           interactiveElements: []
         }
-        var scene5 = new CreateCustomScene(parameters5, scope, engine, canvas)
-        scenesMap = [ ...scenesMap, scene5 ]
+        var bathroom = new CreateCustomScene(parameters5, scope, engine, canvas)
+        scenesMap = [ ...scenesMap, bathroom ]
 
         var parameters6 = {
           nameScene: 'scene6',
@@ -327,7 +335,7 @@ export default {
           cubeMap: '6',
           exits: [
             {
-              nameExitRoom: 'scene5',
+              nameExitRoom: 'bathroom',
               positionExitRoom: new BABYLON.Vector3(0, -11, -940),
               rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
             },

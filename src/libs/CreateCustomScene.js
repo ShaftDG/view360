@@ -146,8 +146,8 @@ export default function CreateCustomScene (parameters, scope, engine, canvas) {
       if (b.target.mesh) {
         b.target.mesh.scaling = new BABYLON.Vector3(1.5, 1.5, 1.5)
         scope.showHint = true
-        var stirng = b.target.mesh.name
-        scope.textHint = stirng.split('_')[1].replace('-', ' ')
+        var string = b.target.mesh.name
+        scope.textHint = string.split('_')[1].replace('-', ' ')
       }
     })
     pushButton.onPointerOutObservable.add(function (a, b) {
