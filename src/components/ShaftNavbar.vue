@@ -156,7 +156,7 @@ export default {
     width: 160px;
     /*background-color: aqua;*/
     padding: 10px 0 0 0;
-    font-size: 20px;
+    font-size: 24px;
     font-family: '微软雅黑',arail;
     cursor: pointer;
     text-shadow: 0 0 10px #101921, 0 0 15px #0c2638;

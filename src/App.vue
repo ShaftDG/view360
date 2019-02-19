@@ -49,7 +49,7 @@
         you can use custom content here to overwrite
         default content
       -->
-      <h3 slot="header">{{nameElement}}</h3>
+      <!--<h3 slot="header">{{nameElement}}</h3>-->
       <!--<iframe slot="body" src="https://ru.vuejs.org/v2/guide/components.html"-->
       <iframe id="modalIframe" slot="body" :src="iframe.src"
               width="100%" height="100%" frameborder="0" allowfullscreen>
@@ -90,10 +90,10 @@ export default {
       currentSceneName: 'scene1',
       scenes: [
         { text: 'scene1', value: 'scene1' },
-        { text: 'living room', value: 'living-room' },
-        { text: 'kitchen', value: 'kitchen' },
-        { text: 'child room', value: 'child-room' },
-        { text: 'bathroom', value: 'bathroom' },
+        { text: 'гостиная', value: 'living-room' },
+        { text: 'кухня', value: 'kitchen' },
+        { text: 'детская', value: 'child-room' },
+        { text: 'ванная', value: 'bathroom' },
         { text: 'scene6', value: 'scene6' },
         { text: 'scene7', value: 'scene7' }
       ],
@@ -207,12 +207,13 @@ export default {
         var parameters1 = {
           nameScene: 'scene1',
           cameraPosition: new BABYLON.Vector3(0, 7, 20),
-          cameraTarget: new BABYLON.Vector3(0, 5, 0),
+          cameraTarget: new BABYLON.Vector3(0, 0, 0),
           fadeLevel: 1,
           cubeMap: '1',
           exits: [
             {
               nameExitRoom: 'kitchen',
+              textHint: 'Кухня',
               positionExitRoom: new BABYLON.Vector3(-5, -13, 940),
               rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
             }
@@ -220,13 +221,15 @@ export default {
           interactiveElements: [
             {
               nameElement: 'tv',
-              positionElement: new BABYLON.Vector3(-460, 0, 24),
+              textHint: 'tv',
+              positionElement: new BABYLON.Vector3(-940, 0, 24),
               rotationElement: new BABYLON.Vector3(0, 0, 0),
               url: 'http://81.25.47.128/JewelSlot/'
             },
             {
               nameElement: 'bed',
-              positionElement: new BABYLON.Vector3(460, -20, 46),
+              textHint: 'bed',
+              positionElement: new BABYLON.Vector3(940, -20, 46),
               rotationElement: new BABYLON.Vector3(0, 0, 0),
               url: 'http://192.168.1.55:8080'
             }
@@ -238,17 +241,110 @@ export default {
         var parameters2 = {
           nameScene: 'living-room',
           cameraPosition: new BABYLON.Vector3(20, 7, 0),
-          cameraTarget: new BABYLON.Vector3(0, 5, 0),
+          cameraTarget: new BABYLON.Vector3(0, 0, 0),
           fadeLevel: 0,
           cubeMap: 'living_room',
           exits: [
             {
               nameExitRoom: 'kitchen',
+              textHint: 'Кухня',
               positionExitRoom: new BABYLON.Vector3(940, -11, -4),
               rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
             }
           ],
-          interactiveElements: []
+          interactiveElements: [
+            {
+              nameElement: '1',
+              textHint: 'Углы и острая кромка мебели',
+              positionElement: new BABYLON.Vector3(-355, -232, 904),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index1.html'
+            },
+            {
+              nameElement: '2',
+              textHint: 'Розетки',
+              positionElement: new BABYLON.Vector3(894, -256, -364),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index2.html'
+            },
+            {
+              nameElement: '3',
+              textHint: 'Провода, удлинитель',
+              positionElement: new BABYLON.Vector3(33, -392, -917),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index3.html'
+            },
+            {
+              nameElement: '4',
+              textHint: 'Мелкие предметы',
+              positionElement: new BABYLON.Vector3(507, -556, -657),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index4.html'
+            },
+            {
+              nameElement: '5',
+              textHint: 'Комод, шкаф',
+              positionElement: new BABYLON.Vector3(229, -299, 924),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index5.html'
+            },
+            {
+              nameElement: '6',
+              textHint: 'Окна',
+              positionElement: new BABYLON.Vector3(-951, 214, -214),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index6.html'
+            },
+            {
+              nameElement: '7',
+              textHint: 'Двери',
+              positionElement: new BABYLON.Vector3(867, 13, 495),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index7.html'
+            },
+            {
+              nameElement: '8',
+              textHint: 'Телевизор',
+              positionElement: new BABYLON.Vector3(796, -60, -601),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index8.html'
+            },
+            {
+              nameElement: '9',
+              textHint: 'Шторы, портьеры, жалюзи',
+              positionElement: new BABYLON.Vector3(-363, -777, -512),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index9.html'
+            },
+            {
+              nameElement: '10',
+              textHint: 'Камин',
+              positionElement: new BABYLON.Vector3(929, -361, -79),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index10.html'
+            },
+            {
+              nameElement: '11',
+              textHint: 'Рабочее место (компьютер)',
+              positionElement: new BABYLON.Vector3(-520, -49, 851),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index11.html'
+            },
+            {
+              nameElement: '12',
+              textHint: 'Комнатные растения',
+              positionElement: new BABYLON.Vector3(171, -319, -931),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index12.html'
+            },
+            {
+              nameElement: '13',
+              textHint: 'Шкафчики, шуфляды, ящики',
+              positionElement: new BABYLON.Vector3(642, -346, -682),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index13.html'
+            }
+          ]
         }
         var scene2 = new CreateCustomScene(parameters2, scope, engine, canvas)
         scenesMap = [ ...scenesMap, scene2 ]
@@ -262,21 +358,116 @@ export default {
           exits: [
             {
               nameExitRoom: 'scene1',
-              positionExitRoom: new BABYLON.Vector3(-10, -22, 940),
+              textHint: 'scene1',
+              positionExitRoom: new BABYLON.Vector3(100, -22, 940),
               rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
             },
             {
               nameExitRoom: 'living-room',
+              textHint: 'Гостиная',
               positionExitRoom: new BABYLON.Vector3(-940, -11, -20),
               rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
             },
             {
               nameExitRoom: 'child-room',
+              textHint: 'Детская',
               positionExitRoom: new BABYLON.Vector3(940, -11, -25),
               rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
             }
           ],
-          interactiveElements: []
+          interactiveElements: [
+            {
+              nameElement: '1',
+              textHint: 'Столы и рабочие поверхности ',
+              positionElement: new BABYLON.Vector3(756, -146, -634),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'http://81.25.47.128/JewelSlot/'
+            },
+            {
+              nameElement: '2',
+              textHint: 'Кухонные приборы на столе (стерилизатор)',
+              positionElement: new BABYLON.Vector3(991, -126, -3),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'http://81.25.47.128/JewelSlot/'
+            },
+            {
+              nameElement: '3',
+              textHint: 'Кухонный стол',
+              positionElement: new BABYLON.Vector3(-843, -323, -426),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'http://81.25.47.128/JewelSlot/'
+            },
+            {
+              nameElement: '4',
+              textHint: 'Шкафчики, шуфляды, ящики',
+              positionElement: new BABYLON.Vector3(886, -387, -251),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'http://81.25.47.128/JewelSlot/'
+            },
+            {
+              nameElement: '5',
+              textHint: 'Кухонная плита',
+              positionElement: new BABYLON.Vector3(885, -157, -436),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'http://81.25.47.128/JewelSlot/'
+            },
+            {
+              nameElement: '6',
+              textHint: 'Холодильник',
+              positionElement: new BABYLON.Vector3(-90, -3, 996),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'http://81.25.47.128/JewelSlot/'
+            },
+            {
+              nameElement: '7',
+              textHint: 'Мусорное ведро',
+              positionElement: new BABYLON.Vector3(686, -395, -609),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'http://81.25.47.128/JewelSlot/'
+            },
+            {
+              nameElement: '8',
+              textHint: 'Стульчик для кормления',
+              positionElement: new BABYLON.Vector3(247, -290, -924),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'http://81.25.47.128/JewelSlot/'
+            },
+            {
+              nameElement: '9',
+              textHint: 'Посуда',
+              positionElement: new BABYLON.Vector3(768, -87, 632),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'http://81.25.47.128/JewelSlot/'
+            },
+            // {
+            //   nameElement: '10',
+            //   textHint: '',
+            //   positionElement: new BABYLON.Vector3(1000, 1000, 1000),
+            //   rotationElement: new BABYLON.Vector3(0, 0, 0),
+            //   url: 'http://81.25.47.128/JewelSlot/'
+            // },
+            {
+              nameElement: '11',
+              textHint: 'Окна',
+              positionElement: new BABYLON.Vector3(308, 305, -899),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'http://81.25.47.128/JewelSlot/'
+            },
+            {
+              nameElement: '12',
+              textHint: 'Двери',
+              positionElement: new BABYLON.Vector3(-631, 89, 769),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'http://81.25.47.128/JewelSlot/'
+            },
+            {
+              nameElement: '13',
+              textHint: 'Розетки',
+              positionElement: new BABYLON.Vector3(842, 14, 538),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'http://81.25.47.128/JewelSlot/'
+            }
+          ]
         }
         var scene3 = new CreateCustomScene(parameters3, scope, engine, canvas)
         scenesMap = [ ...scenesMap, scene3 ]
@@ -290,11 +481,13 @@ export default {
           exits: [
             {
               nameExitRoom: 'kitchen',
+              textHint: 'Кухня',
               positionExitRoom: new BABYLON.Vector3(-940, -11, 0),
               rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
             },
             {
               nameExitRoom: 'bathroom',
+              textHint: 'Ванная',
               positionExitRoom: new BABYLON.Vector3(10, -11, -940),
               rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
             }
@@ -313,11 +506,13 @@ export default {
           exits: [
             {
               nameExitRoom: 'child-room',
+              textHint: 'Детская',
               positionExitRoom: new BABYLON.Vector3(15, -11, -940),
               rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
             },
             {
               nameExitRoom: 'scene6',
+              textHint: 'scene6',
               positionExitRoom: new BABYLON.Vector3(15, -11, 940),
               rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
             }
@@ -336,11 +531,13 @@ export default {
           exits: [
             {
               nameExitRoom: 'bathroom',
+              textHint: 'Ванная',
               positionExitRoom: new BABYLON.Vector3(0, -11, -940),
               rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
             },
             {
               nameExitRoom: 'scene7',
+              textHint: 'scene7',
               positionExitRoom: new BABYLON.Vector3(0, -11, 940),
               rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
             }
@@ -359,6 +556,7 @@ export default {
           exits: [
             {
               nameExitRoom: 'scene6',
+              textHint: 'scene6',
               positionExitRoom: new BABYLON.Vector3(0, -11, -940),
               rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
             }
@@ -369,6 +567,9 @@ export default {
         scenesMap = [ ...scenesMap, scene7 ]
 
         scope.currentScene = scene1
+        scope.currentScene.userData.buttons.map(v => {
+          v.isEnabled = true
+        })
         if (scope.currentSceneName !== scope.currentScene.name) {
           engine.scenes.map(v => {
             if (v.name === scope.currentSceneName) {
@@ -381,6 +582,7 @@ export default {
         scope.currentScene.activeCamera.attachControl(canvas, false)
 
         var changeVisibleBABYLONScene = this.changeVisibleBABYLONScene
+
         scope.currentScene.executeWhenReady(function () {
           changeVisibleBABYLONScene(true)
         })
@@ -389,6 +591,9 @@ export default {
             engine.scenes.map(v => {
               if (v.name === scope.currentSceneName) {
                 scope.currentScene = v
+                scope.currentScene.userData.buttons.map(v => {
+                  v.isEnabled = true
+                })
                 scope.currentScene.activeCamera.attachControl(canvas, false)
                 scope.currentScene.isTransitionSceneOn = true
               }
@@ -425,7 +630,7 @@ export default {
   color: #94ccff
 }
 :root {
-  --width: 300px;
+  --width: 100%;
 }
 .hint {
   position: absolute;

@@ -89,17 +89,17 @@ export default {
   }
 
   .modal-header{
-    height: 5%;
+    height: 0%;
     margin-top: 5px;
     color: #42b983;
   }
   .modal-footer{
-    height: 5%;
+    height: 0%;
     margin-top: 10px;
     color: #42b983;
   }
   .modal-body {
-    height: 85%;
+    height: 99%;
     margin: 0;
   }
 
