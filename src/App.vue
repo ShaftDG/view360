@@ -309,13 +309,13 @@ export default {
               rotationElement: new BABYLON.Vector3(0, 0, 0),
               url: 'modal/livingroom/index8.html'
             },
-            {
-              nameElement: '9',
-              textHint: 'Шторы, портьеры, жалюзи',
-              positionElement: new BABYLON.Vector3(-363, -777, -512),
-              rotationElement: new BABYLON.Vector3(0, 0, 0),
-              url: 'modal/livingroom/index9.html'
-            },
+            // {
+            //   nameElement: '9',
+            //   textHint: 'Шторы, портьеры, жалюзи',
+            //   positionElement: new BABYLON.Vector3(-363, -777, -512),
+            //   rotationElement: new BABYLON.Vector3(0, 0, 0),
+            //   url: 'modal/livingroom/index9.html'
+            // },
             {
               nameElement: '10',
               textHint: 'Камин',
@@ -466,7 +466,14 @@ export default {
               positionElement: new BABYLON.Vector3(842, 14, 538),
               rotationElement: new BABYLON.Vector3(0, 0, 0),
               url: 'http://81.25.47.128/JewelSlot/'
-            }
+            },
+            {
+              nameElement: '14',
+              textHint: 'Духовой шкаф',
+              positionElement: new BABYLON.Vector3(355, -99, 929),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'http://81.25.47.128/JewelSlot/'
+            },
           ]
         }
         var scene3 = new CreateCustomScene(parameters3, scope, engine, canvas)
