@@ -7,7 +7,7 @@
         <path :d="menuPath3" stroke="white" stroke-linecap="round" stroke-width="4"/>
       </svg>
     </div>
-      <div class='container-mobile'>
+      <div class='container-mobile' ref='containerMobile'>
         <!--<svg id="svgHeader" class="bg" width="100%" height="80px" ref="svgHeader" aria-hidden="true">-->
         <!--<linearGradient  id="grad"-->
         <!--x1="100%" y1="100%">-->
@@ -18,7 +18,7 @@
         <!--</linearGradient >-->
         <!--<path :d="headerPath" fill=url(#grad) stroke="white"  stroke-width="3"/>-->
         <!--</svg>-->
-        <svg id="svgHeader" class="bg" width="100%" height="100%" ref="svgHeader" aria-hidden="true">
+        <svg id="svgHeader" class="bg" width="100%" height="352px" ref="svgHeader" aria-hidden="true">
           <linearGradient  id="grad"
                            x1="0%" y1="0%">
             <stop offset="40%" stop-color="deepskyblue"
@@ -31,7 +31,7 @@
           <path :d="headerPath" class="path" ref="path" fill=transparent stroke="white" stroke-linecap="round" stroke-width="4"/>
         </svg>
         <transition name="slide-fade">
-          <div  v-if="showMenu">
+          <div v-if="showMenu" ref="stringMenu">
             <div class="link-mobile"
                  v-for='option in options'
                  :key='option.value'
@@ -109,7 +109,7 @@ export default {
       return 'M' + this.menuProperties.line3.x + ' ' + this.menuProperties.line3.y + ' L ' + this.menuProperties.line3.x1 + ' ' + this.menuProperties.line3.y1
     },
     headerPath: function () {
-      return 'M150 3 ' +
+      return 'M148 3 ' +
         'L ' + this.calculateMiddlePoint(this.pathCells.scene1) + ' 3' +
         'C ' + this.pathCells.scene1 + ' 0, ' + this.pathCells.scene1 + ' 50, ' + this.calculateMiddlePoint(this.pathCells.scene1) + ' 50 ' +
         'L 148 50' +
@@ -130,7 +130,7 @@ export default {
         'L 148 300' +
         'L ' + this.calculateMiddlePoint(this.pathCells.scene7) + ' 300' +
         'C ' + this.pathCells.scene7 + ' 300, ' + this.pathCells.scene7 + ' 350, ' + this.calculateMiddlePoint(this.pathCells.scene7) + ' 350' +
-        'L 150 350'
+        'L 148 350'
     }
   },
   watch: {
@@ -214,11 +214,19 @@ export default {
             })
             that.$refs.path.classList.remove('close')
             that.$refs.path.classList.add('open')
+            // that.$refs.containerMobile.style.maxHeight = '354px'
+            // console.log(that.$refs.containerMobile.clientHeight, screen.height*0.8)
+            // if (that.$refs.containerMobile.clientHeight > screen.height * 0.8) {
+            //   that.$refs.containerMobile.classList.add('scroll')
+            //   that.$refs.containerMobile.style.maxHeight = (screen.height * 0.8) + 'px'
+            // } else {
+            //   that.$refs.containerMobile.classList.remove('scroll')
+            // }
             dynamics.animate(that.menuProperties.line2, {
-              y: 42,
-              y1: 42
+              y: 45,
+              y1: 45
             }, {
-              type: dynamics.easeInOut,
+              type: dynamics.easeIn,
               duration: 200,
               friction: 200
             })
@@ -292,7 +300,43 @@ export default {
             that.$emit('updateOption', that.selectedOption)
           }
         })*/
-
+        let index = this.options.findIndex(x => x.value === nextProperty)
+        let h = index * 50
+        if (h > screen.height * 0.3 && that.$refs.containerMobile.clientHeight > screen.height * 0.8) {
+          let hx = h - 100
+          dynamics.animate(that.$refs.stringMenu, {
+            translateY: -hx
+          }, {
+            type: dynamics.easeInOut,
+            duration: 500,
+            friction: 300
+          })
+          dynamics.animate(that.$refs.svgHeader, {
+            translateY: -hx
+          }, {
+            type: dynamics.easeInOut,
+            duration: 500,
+            friction: 300
+          })
+        } else {
+          var matrix = new WebKitCSSMatrix(that.$refs.stringMenu.style.webkitTransform)
+          if (matrix.m42 !== 0) {
+            dynamics.animate(that.$refs.stringMenu, {
+              translateY: 0
+            }, {
+              type: dynamics.easeInOut,
+              duration: 500,
+              friction: 300
+            })
+            dynamics.animate(that.$refs.svgHeader, {
+              translateY: 0
+            }, {
+              type: dynamics.easeInOut,
+              duration: 500,
+              friction: 300
+            })
+          }
+        }
         dynamics.animate(this.pathCells, {
           [currentProperty.replace('-', '')]: 148,
           [nextProperty.replace('-', '')]: 2
@@ -344,6 +388,11 @@ export default {
     padding: 2px;
     margin: 50px 10px 20px 20px;
     vertical-align: middle;
+    clip-path: polygon(0% 0%, 100% 0%, 0% 100%, 100% 0%, 100% 100%, 0% 100%);
+  }
+  .scroll {
+    overflow-x:hidden;
+    overflow-y:auto;
   }
 
   .container-menu:hover {
@@ -355,7 +404,7 @@ export default {
     height: 50px;
     position: absolute;
     right: 0;
-    padding: 2px;
+    padding: 0 4px 0 0;
     margin: 10px 10px 10px 10px;
     vertical-align: middle;
   }
@@ -367,6 +416,8 @@ export default {
     z-index: 0;
     display: flex;
     align-items: center;
+    overflow-x:hidden;
+    overflow-y:auto;
   }
 
   .link {
