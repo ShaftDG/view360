@@ -381,98 +381,98 @@ export default {
               textHint: 'Столы и рабочие поверхности ',
               positionElement: new BABYLON.Vector3(756, -146, -634),
               rotationElement: new BABYLON.Vector3(0, 0, 0),
-              url: 'http://81.25.47.128/JewelSlot/'
+              url: 'modal/kitchen/index1.html'
             },
             {
               nameElement: '2',
               textHint: 'Кухонные приборы на столе (стерилизатор)',
               positionElement: new BABYLON.Vector3(991, -126, -3),
               rotationElement: new BABYLON.Vector3(0, 0, 0),
-              url: 'http://81.25.47.128/JewelSlot/'
+              url: 'modal/kitchen/index2.html'
             },
             {
               nameElement: '3',
               textHint: 'Кухонный стол',
               positionElement: new BABYLON.Vector3(-843, -323, -426),
               rotationElement: new BABYLON.Vector3(0, 0, 0),
-              url: 'http://81.25.47.128/JewelSlot/'
+              url: 'modal/kitchen/index3.html'
             },
             {
               nameElement: '4',
               textHint: 'Шкафчики, шуфляды, ящики',
               positionElement: new BABYLON.Vector3(886, -387, -251),
               rotationElement: new BABYLON.Vector3(0, 0, 0),
-              url: 'http://81.25.47.128/JewelSlot/'
+              url: 'modal/kitchen/index4.html'
             },
             {
               nameElement: '5',
               textHint: 'Кухонная плита',
               positionElement: new BABYLON.Vector3(885, -157, -436),
               rotationElement: new BABYLON.Vector3(0, 0, 0),
-              url: 'http://81.25.47.128/JewelSlot/'
+              url: 'modal/kitchen/index5.html'
             },
             {
               nameElement: '6',
               textHint: 'Холодильник',
               positionElement: new BABYLON.Vector3(-90, -3, 996),
               rotationElement: new BABYLON.Vector3(0, 0, 0),
-              url: 'http://81.25.47.128/JewelSlot/'
+              url: 'modal/kitchen/index6.html'
             },
             {
               nameElement: '7',
               textHint: 'Мусорное ведро',
               positionElement: new BABYLON.Vector3(686, -395, -609),
               rotationElement: new BABYLON.Vector3(0, 0, 0),
-              url: 'http://81.25.47.128/JewelSlot/'
+              url: 'modal/kitchen/index7.html'
             },
             {
               nameElement: '8',
               textHint: 'Стульчик для кормления',
               positionElement: new BABYLON.Vector3(247, -290, -924),
               rotationElement: new BABYLON.Vector3(0, 0, 0),
-              url: 'http://81.25.47.128/JewelSlot/'
+              url: 'modal/kitchen/index8.html'
             },
             {
               nameElement: '9',
               textHint: 'Посуда',
               positionElement: new BABYLON.Vector3(768, -87, 632),
               rotationElement: new BABYLON.Vector3(0, 0, 0),
-              url: 'http://81.25.47.128/JewelSlot/'
+              url: 'modal/kitchen/index9.html'
             },
             // {
             //   nameElement: '10',
             //   textHint: '',
             //   positionElement: new BABYLON.Vector3(1000, 1000, 1000),
             //   rotationElement: new BABYLON.Vector3(0, 0, 0),
-            //   url: 'http://81.25.47.128/JewelSlot/'
+            //   url: 'modal/kitchen/index10.html'
             // },
             {
               nameElement: '11',
               textHint: 'Окна',
               positionElement: new BABYLON.Vector3(308, 305, -899),
               rotationElement: new BABYLON.Vector3(0, 0, 0),
-              url: 'http://81.25.47.128/JewelSlot/'
+              url: 'modal/kitchen/index11.html'
             },
             {
               nameElement: '12',
               textHint: 'Двери',
               positionElement: new BABYLON.Vector3(-631, 89, 769),
               rotationElement: new BABYLON.Vector3(0, 0, 0),
-              url: 'http://81.25.47.128/JewelSlot/'
+              url: 'modal/kitchen/index12.html'
             },
             {
               nameElement: '13',
               textHint: 'Розетки',
               positionElement: new BABYLON.Vector3(842, 14, 538),
               rotationElement: new BABYLON.Vector3(0, 0, 0),
-              url: 'http://81.25.47.128/JewelSlot/'
+              url: 'modal/kitchen/index13.html'
             },
             {
               nameElement: '14',
               textHint: 'Духовой шкаф',
               positionElement: new BABYLON.Vector3(355, -99, 929),
               rotationElement: new BABYLON.Vector3(0, 0, 0),
-              url: 'http://81.25.47.128/JewelSlot/'
+              url: 'modal/kitchen/index1.html'
             },
           ]
         }

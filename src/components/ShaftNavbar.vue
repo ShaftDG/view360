@@ -1,5 +1,10 @@
 <template>
-  <div>
+  <v-touch :enabled="isEnabledTouch"
+           @panstart="onPanStart"
+           @pandown="onPanDown"
+           @panup="onPanUp"
+           :swipe-options="{ threshold: 5 }">
+  <div style="overflow: hidden;">
     <div class='container-menu' @click='changeMenu()'>
       <svg id="svgMenu" class="bg" width="100%" height="100%" ref="svgMenu" aria-hidden="true">
         <path :d="menuPath1" stroke="white" stroke-linecap="round" stroke-width="4"/>
@@ -30,21 +35,30 @@
           </linearGradient >
           <path :d="headerPath" class="path" ref="path" fill=transparent stroke="white" stroke-linecap="round" stroke-width="4"/>
         </svg>
-        <transition name="slide-fade">
-          <div v-if="showMenu" ref="stringMenu">
-            <div class="link-mobile"
-                 v-for='option in options'
-                 :key='option.value'
-                 v-bind:id='option.value'
-                 v-bind:ref='option.value'
-                 @click='updateOption(option)'
-            >
-              {{ option.text }}
+
+        <transition
+          name="slide-fade"
+          @before-enter="beforeEnter"
+          @after-enter="afterEnter"
+          @before-leave="beforeLeave"
+        >
+
+            <div v-if="showMenu" ref="stringMenu">
+              <div class="link-mobile"
+                   v-for='option in options'
+                   :key='option.value'
+                   v-bind:id='option.value'
+                   v-bind:ref='option.value'
+                   @click='updateOption(option)'
+              >
+                {{ option.text }}
+              </div>
             </div>
-          </div>
+
         </transition>
       </div>
   </div>
+  </v-touch>
 </template>
 
 <script>
@@ -78,6 +92,9 @@ export default {
         line2: { x: 30, y: 17, x1: 4, y1: 17 },
         line3: { x: 30, y: 30, x1: 4, y1: 30 }
       },
+      menuPositionY: 0,
+      isEnabledTouch: false,
+      panStart: 0,
       pathCells: {
         bathroom: 148,
         childroom: 148,
@@ -169,12 +186,74 @@ export default {
     }
   },
   methods: {
+    beforeEnter (el) {
+      el.style.transform = 'translateY(' + this.menuPositionY + 'px)'
+    },
+    afterEnter (el) {
+      // dynamics.animate(el, {
+      //   translateY: this.menuPositionY
+      // }, {
+      //   type: dynamics.easeInOut,
+      //   duration: 500,
+      //   friction: 300
+      // })
+      // dynamics.animate(this.$refs.svgHeader, {
+      //   translateY: this.menuPositionY
+      // }, {
+      //   type: dynamics.easeInOut,
+      //   duration: 500,
+      //   friction: 300
+      // })
+    },
+    beforeLeave (el) {
+      // el.style.transform = 'translateY(' + this.menuPositionY + 'px)'
+    },
     calculateMiddlePoint (value) {
       return ((value + 33) < 148 ? value + 33 : 148)
+    },
+    swipe (val) {
+      // dynamics.animate(this.$refs.stringMenu, {
+      //   translateY: val
+      // }, {
+      //   type: dynamics.easeInOut,
+      //   duration: 200,
+      //   friction: 200
+      // })
+      // dynamics.animate(this.$refs.svgHeader, {
+      //   translateY: val
+      // }, {
+      //   type: dynamics.easeInOut,
+      //   duration: 200,
+      //   friction: 200
+      // })
+      this.$refs.stringMenu.style.transform = 'translateY(' + val + 'px)'
+      this.$refs.svgHeader.style.transform = 'translateY(' + val + 'px)'
+    },
+    onPanStart (event) {
+      this.panstart = this.menuPositionY
+    },
+    onPanDown (event) {
+      if (this.menuPositionY < 0) {
+        this.menuPositionY = event.deltaY + this.panstart
+      } else {
+
+        this.menuPositionY = 0
+      }
+      this.swipe(this.menuPositionY)
+    },
+    onPanUp (event) {
+      if (this.menuPositionY > -200) {
+        this.menuPositionY = event.deltaY + this.panstart
+      } else {
+        this.menuPositionY = -200
+      }
+      this.swipe(this.menuPositionY)
     },
     changeMenu () {
       var that = this
       if (this.menuClosed) {
+        this.isEnabledTouch = true
+        this.$refs.containerMobile.style.right = '0'
         dynamics.animate(this.menuProperties.line1, {
           y: 30
         }, {
@@ -214,14 +293,6 @@ export default {
             })
             that.$refs.path.classList.remove('close')
             that.$refs.path.classList.add('open')
-            // that.$refs.containerMobile.style.maxHeight = '354px'
-            // console.log(that.$refs.containerMobile.clientHeight, screen.height*0.8)
-            // if (that.$refs.containerMobile.clientHeight > screen.height * 0.8) {
-            //   that.$refs.containerMobile.classList.add('scroll')
-            //   that.$refs.containerMobile.style.maxHeight = (screen.height * 0.8) + 'px'
-            // } else {
-            //   that.$refs.containerMobile.classList.remove('scroll')
-            // }
             dynamics.animate(that.menuProperties.line2, {
               y: 45,
               y1: 45
@@ -233,6 +304,7 @@ export default {
           }
         })
       } else {
+        this.isEnabledTouch = false
         let currentProperty = this.selectedOption
         dynamics.animate(this.pathCells, {
           [currentProperty.replace('-', '')]: 148
@@ -276,6 +348,7 @@ export default {
                   duration: 250,
                   friction: 300
                 })
+                that.$refs.containerMobile.style.right = '-200px'
               }
             })
           }
@@ -304,6 +377,7 @@ export default {
         let h = index * 50
         if (h > screen.height * 0.3 && that.$refs.containerMobile.clientHeight > screen.height * 0.8) {
           let hx = h - 100
+          this.menuPositionY = -hx
           dynamics.animate(that.$refs.stringMenu, {
             translateY: -hx
           }, {
@@ -384,15 +458,11 @@ export default {
     width: 150px;
     height: 350px;
     position: absolute;
-    right: 0;
+    right: -200px;
     padding: 2px;
     margin: 50px 10px 20px 20px;
     vertical-align: middle;
     clip-path: polygon(0% 0%, 100% 0%, 0% 100%, 100% 0%, 100% 100%, 0% 100%);
-  }
-  .scroll {
-    overflow-x:hidden;
-    overflow-y:auto;
   }
 
   .container-menu:hover {
@@ -457,12 +527,12 @@ export default {
   }
 
   .open {
-    animation: dash-in 0.6s linear normal;
+    animation: dash-in 0.6s linear;
     animation-fill-mode: forwards;
   }
 
   .close {
-    animation: dash-out 0.6s linear normal;
+    animation: dash-out 0.6s linear;
     animation-fill-mode: forwards;
   }
 
@@ -497,23 +567,21 @@ export default {
   }
 
   .slide-fade-enter-active {
-    /*transition: all .25s ease;*/
     animation: bounce-in 0.85s;
   }
   .slide-fade-leave-active {
-    /*transition: all .25s ease;*/
     animation: bounce-in 0.25s reverse;
   }
+
   @keyframes bounce-in {
     0% {
-      transform: perspective(1000px) rotateX(-90deg);
-      opacity: 0.5;
+      opacity: 0;
     }
-    25% {
-      opacity: 1;
+    75% {
+      opacity: 0;
     }
     100% {
-      transform: perspective(1000px) rotateX(0deg);
+      opacity: 1;
     }
   }
 </style>
