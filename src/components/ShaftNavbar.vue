@@ -1,50 +1,37 @@
 <template>
-  <v-touch :enabled="isEnabledTouch"
-           @panstart="onPanStart"
-           @pandown="onPanDown"
-           @panup="onPanUp"
-           :swipe-options="{ threshold: 5 }">
-  <div style="overflow: hidden;">
-    <div class='container-menu' @click='changeMenu()'>
-      <svg id="svgMenu" class="bg" width="100%" height="100%" ref="svgMenu" aria-hidden="true">
-        <path :d="menuPath1" stroke="white" stroke-linecap="round" stroke-width="4"/>
-        <path :d="menuPath2" stroke="white" stroke-linecap="round" stroke-width="4"/>
-        <path :d="menuPath3" stroke="white" stroke-linecap="round" stroke-width="4"/>
-      </svg>
-    </div>
-      <div class='container-mobile' ref='containerMobile'>
-        <!--<svg id="svgHeader" class="bg" width="100%" height="80px" ref="svgHeader" aria-hidden="true">-->
-        <!--<linearGradient  id="grad"-->
-        <!--x1="100%" y1="100%">-->
-        <!--<stop offset="30%" stop-color="deepskyblue"-->
-        <!--stop-opacity="1" class="stop-1"/>-->
-        <!--<stop offset="100%" stop-color="dodgerblue"-->
-        <!--stop-opacity="0" class="stop-2"/>-->
-        <!--</linearGradient >-->
-        <!--<path :d="headerPath" fill=url(#grad) stroke="white"  stroke-width="3"/>-->
-        <!--</svg>-->
-        <svg id="svgHeader" class="bg" width="100%" height="352px" ref="svgHeader" aria-hidden="true">
-          <linearGradient  id="grad"
-                           x1="0%" y1="0%">
-            <stop offset="40%" stop-color="deepskyblue"
-                  stop-opacity="1" class="stop-1"/>
-            <stop offset="50%" stop-color="deepskyblue"
-                  stop-opacity="1" class="stop-2"/>
-            <stop offset="100%" stop-color="dodgerblue"
-                  stop-opacity="0" class="stop-3"/>
-          </linearGradient >
-          <path :d="headerPath" class="path" ref="path" fill=transparent stroke="white" stroke-linecap="round" stroke-width="4"/>
-        </svg>
-
-        <transition
-          name="slide-fade"
-          @before-enter="beforeEnter"
-          @after-enter="afterEnter"
-          @before-leave="beforeLeave"
-        >
-
+  <div v-if="typeMenu === 'vertical'">
+    <v-touch :enabled="isEnabledTouch"
+             @panstart="onPanStart"
+             @pandown="onPanDown"
+             @panup="onPanUp"
+             :swipe-options="{ threshold: 5 }">
+      <div style="overflow: hidden;">
+        <div class='container-menu' @click='changeMenu()'>
+          <svg id="svgMenu" class="bg" width="100%" height="100%" ref="svgMenu" aria-hidden="true">
+            <path :d="menuPath1" stroke="white" stroke-linecap="round" stroke-width="4"/>
+            <path :d="menuPath2" stroke="white" stroke-linecap="round" stroke-width="4"/>
+            <path :d="menuPath3" stroke="white" stroke-linecap="round" stroke-width="4"/>
+          </svg>
+        </div>
+        <div class='container-vertical' ref='containerVertical'>
+          <svg id="svgHeader" class="bg" width="100%" height="352px" ref="svgHeader" aria-hidden="true">
+            <linearGradient  id="grad"
+                             x1="0%" y1="0%">
+              <stop offset="40%" stop-color="deepskyblue"
+                    stop-opacity="1" class="stop-1"/>
+              <stop offset="50%" stop-color="deepskyblue"
+                    stop-opacity="1" class="stop-2"/>
+              <stop offset="100%" stop-color="dodgerblue"
+                    stop-opacity="0" class="stop-3"/>
+            </linearGradient >
+            <path :d="headerPathVertical" class="path" ref="path" fill=transparent stroke="white" stroke-linecap="round" stroke-width="4"/>
+          </svg>
+          <transition
+            name="slide-fade"
+            @before-enter="beforeEnter"
+          >
             <div v-if="showMenu" ref="stringMenu">
-              <div class="link-mobile"
+              <div class="link-vertical"
                    v-for='option in options'
                    :key='option.value'
                    v-bind:id='option.value'
@@ -54,39 +41,59 @@
                 {{ option.text }}
               </div>
             </div>
-
-        </transition>
+          </transition>
+        </div>
       </div>
+    </v-touch>
   </div>
-  </v-touch>
+  <div v-else-if="typeMenu === 'horizontal'">
+    <div class='container-horizontal' ref='containerHorizontal'>
+      <svg id="svgHeader" class="bg" width="100%" height="80px" ref="svgHeader" aria-hidden="true">
+      <linearGradient  id="grad"
+      x1="100%" y1="100%">
+      <stop offset="30%" stop-color="deepskyblue"
+      stop-opacity="1" class="stop-1"/>
+      <stop offset="100%" stop-color="dodgerblue"
+      stop-opacity="0" class="stop-2"/>
+      </linearGradient >
+      <path :d="headerPathHorizontal" fill=url(#grad) stroke="white"  stroke-linecap="round" stroke-width="4"/>
+      </svg>
+      <div class="link-horizontal"
+           v-for='option in options'
+           :key='option.value'
+           v-bind:id='option.value'
+           v-bind:ref='option.value'
+           @click='updateOption(option)'
+      >
+        {{ option.text }}
+      </div>
+    </div>
+  </div>
+  <div v-else>
+    set the menu type VERTICAL or HORIZONTAL
+  </div>
 </template>
 
 <script>
 import dynamics from 'dynamics.js'
 export default {
   name: 'shaft-navbar',
-  props: ['selected', 'options', 'placeholder'],
+  props: ['typeMenu', 'selected', 'options'],
   data () {
     return {
       showMenu: false,
       selectedOption: this.selected,
-      placeholderText: this.placeholder,
-      parentWidth: 320,
-      parentHeight: 40,
-      // quadratic bezier control point
-      c: { x: 160, y: 100 },
-      // record drag start point
-      start: { x: 0, y: 0 },
-      // pathCells: {
-      //   bathroom: 2,
-      //   childroom: 2,
-      //   kitchen: 2,
-      //   livingroom: 2,
-      //   scene1: 2,
-      //   scene6: 2,
-      //   scene7: 2
-      // }
+      pathCellsHorizontal: {
+        bathroom: 2,
+        childroom: 2,
+        kitchen: 2,
+        livingroom: 2,
+        scene1: 2,
+        scene6: 2,
+        scene7: 2
+      },
       menuClosed: true,
+      resolutionSwitching: true,
       menuProperties: {
         line1: { x: 30, y: 4, x1: 4, y1: 4 },
         line2: { x: 30, y: 17, x1: 4, y1: 17 },
@@ -95,7 +102,7 @@ export default {
       menuPositionY: 0,
       isEnabledTouch: false,
       panStart: 0,
-      pathCells: {
+      pathCellsVertical: {
         bathroom: 148,
         childroom: 148,
         kitchen: 148,
@@ -107,15 +114,15 @@ export default {
     }
   },
   computed: {
-    // headerPath: function () {
-    //   return 'M2 2 C 0 ' + this.pathCells.scene1 + ', 160 ' + this.pathCells.scene1 + ', 160 2 ' +
-    //   'C 160 ' + this.pathCells.livingroom + ', 320 ' + this.pathCells.livingroom + ', 320 2' +
-    //   'C 320 ' + this.pathCells.kitchen + ', 480 ' + this.pathCells.kitchen + ', 480 2' +
-    //   'C 480 ' + this.pathCells.childroom + ', 640 ' + this.pathCells.childroom + ', 640 2' +
-    //   'C 640 ' + this.pathCells.bathroom + ', 800 ' + this.pathCells.bathroom + ', 800 2' +
-    //   'C 800 ' + this.pathCells.scene6 + ', 960 ' + this.pathCells.scene6 + ', 960 2' +
-    //   'C 960 ' + this.pathCells.scene7 + ', 1120 ' + this.pathCells.scene7 + ', 1120 2'
-    // }
+    headerPathHorizontal: function () {
+      return 'M2 2 C 0 ' + this.pathCellsHorizontal.scene1 + ', 160 ' + this.pathCellsHorizontal.scene1 + ', 160 2 ' +
+      'C 160 ' + this.pathCellsHorizontal.livingroom + ', 320 ' + this.pathCellsHorizontal.livingroom + ', 320 2' +
+      'C 320 ' + this.pathCellsHorizontal.kitchen + ', 480 ' + this.pathCellsHorizontal.kitchen + ', 480 2' +
+      'C 480 ' + this.pathCellsHorizontal.childroom + ', 640 ' + this.pathCellsHorizontal.childroom + ', 640 2' +
+      'C 640 ' + this.pathCellsHorizontal.bathroom + ', 800 ' + this.pathCellsHorizontal.bathroom + ', 800 2' +
+      'C 800 ' + this.pathCellsHorizontal.scene6 + ', 960 ' + this.pathCellsHorizontal.scene6 + ', 960 2' +
+      'C 960 ' + this.pathCellsHorizontal.scene7 + ', 1120 ' + this.pathCellsHorizontal.scene7 + ', 1120 2'
+    },
     menuPath1: function () {
       return 'M' + this.menuProperties.line1.x + ' ' + this.menuProperties.line1.y + ' L ' + this.menuProperties.line1.x1 + ' ' + this.menuProperties.line1.y1
     },
@@ -125,28 +132,28 @@ export default {
     menuPath3: function () {
       return 'M' + this.menuProperties.line3.x + ' ' + this.menuProperties.line3.y + ' L ' + this.menuProperties.line3.x1 + ' ' + this.menuProperties.line3.y1
     },
-    headerPath: function () {
+    headerPathVertical: function () {
       return 'M148 3 ' +
-        'L ' + this.calculateMiddlePoint(this.pathCells.scene1) + ' 3' +
-        'C ' + this.pathCells.scene1 + ' 0, ' + this.pathCells.scene1 + ' 50, ' + this.calculateMiddlePoint(this.pathCells.scene1) + ' 50 ' +
+        'L ' + this.calculateMiddlePoint(this.pathCellsVertical.scene1) + ' 3' +
+        'C ' + this.pathCellsVertical.scene1 + ' 0, ' + this.pathCellsVertical.scene1 + ' 50, ' + this.calculateMiddlePoint(this.pathCellsVertical.scene1) + ' 50 ' +
         'L 148 50' +
-        'L ' + this.calculateMiddlePoint(this.pathCells.livingroom) + ' 50' +
-        'C ' + this.pathCells.livingroom + ' 50, ' + this.pathCells.livingroom + ' 100, ' + this.calculateMiddlePoint(this.pathCells.livingroom) + ' 100' +
+        'L ' + this.calculateMiddlePoint(this.pathCellsVertical.livingroom) + ' 50' +
+        'C ' + this.pathCellsVertical.livingroom + ' 50, ' + this.pathCellsVertical.livingroom + ' 100, ' + this.calculateMiddlePoint(this.pathCellsVertical.livingroom) + ' 100' +
         'L 148 100' +
-        'L ' + this.calculateMiddlePoint(this.pathCells.kitchen) + ' 100' +
-        'C ' + this.pathCells.kitchen + ' 100, ' + this.pathCells.kitchen + ' 150, ' + this.calculateMiddlePoint(this.pathCells.kitchen) + ' 150' +
+        'L ' + this.calculateMiddlePoint(this.pathCellsVertical.kitchen) + ' 100' +
+        'C ' + this.pathCellsVertical.kitchen + ' 100, ' + this.pathCellsVertical.kitchen + ' 150, ' + this.calculateMiddlePoint(this.pathCellsVertical.kitchen) + ' 150' +
         'L 148 150' +
-        'L ' + this.calculateMiddlePoint(this.pathCells.childroom) + ' 150' +
-        'C ' + this.pathCells.childroom + ' 150, ' + this.pathCells.childroom + ' 200, ' + this.calculateMiddlePoint(this.pathCells.childroom) + ' 200' +
+        'L ' + this.calculateMiddlePoint(this.pathCellsVertical.childroom) + ' 150' +
+        'C ' + this.pathCellsVertical.childroom + ' 150, ' + this.pathCellsVertical.childroom + ' 200, ' + this.calculateMiddlePoint(this.pathCellsVertical.childroom) + ' 200' +
         'L 148 200' +
-        'L ' + this.calculateMiddlePoint(this.pathCells.bathroom) + ' 200' +
-        'C ' + this.pathCells.bathroom + ' 200, ' + this.pathCells.bathroom + ' 250, ' + this.calculateMiddlePoint(this.pathCells.bathroom) + ' 250' +
+        'L ' + this.calculateMiddlePoint(this.pathCellsVertical.bathroom) + ' 200' +
+        'C ' + this.pathCellsVertical.bathroom + ' 200, ' + this.pathCellsVertical.bathroom + ' 250, ' + this.calculateMiddlePoint(this.pathCellsVertical.bathroom) + ' 250' +
         'L 148 250' +
-        'L ' + this.calculateMiddlePoint(this.pathCells.scene6) + ' 250' +
-        'C ' + this.pathCells.scene6 + ' 250, ' + this.pathCells.scene6 + ' 300, ' + this.calculateMiddlePoint(this.pathCells.scene6) + ' 300' +
+        'L ' + this.calculateMiddlePoint(this.pathCellsVertical.scene6) + ' 250' +
+        'C ' + this.pathCellsVertical.scene6 + ' 250, ' + this.pathCellsVertical.scene6 + ' 300, ' + this.calculateMiddlePoint(this.pathCellsVertical.scene6) + ' 300' +
         'L 148 300' +
-        'L ' + this.calculateMiddlePoint(this.pathCells.scene7) + ' 300' +
-        'C ' + this.pathCells.scene7 + ' 300, ' + this.pathCells.scene7 + ' 350, ' + this.calculateMiddlePoint(this.pathCells.scene7) + ' 350' +
+        'L ' + this.calculateMiddlePoint(this.pathCellsVertical.scene7) + ' 300' +
+        'C ' + this.pathCellsVertical.scene7 + ' 300, ' + this.pathCellsVertical.scene7 + ' 350, ' + this.calculateMiddlePoint(this.pathCellsVertical.scene7) + ' 350' +
         'L 148 350'
     }
   },
@@ -157,29 +164,31 @@ export default {
         var that = this
         let currentProperty = this.selectedOption
         let nextProperty = val
-       /* dynamics.animate(this.pathCells, {
-          [currentProperty.replace('-', '')]: 2,
-          [nextProperty.replace('-', '')]: 80
-        }, {
-          type: dynamics.easeInOut,
-          duration: 500,
-          friction: 300,
-          complete: function () {
-            that.selectedOption = val
-          }
-        })*/
-
-        dynamics.animate(this.pathCells, {
-          [currentProperty.replace('-', '')]: 148,
-          [nextProperty.replace('-', '')]: 2
-        }, {
-          type: dynamics.easeInOut,
-          duration: 500,
-          friction: 300,
-          complete: function () {
-            that.selectedOption = val
-          }
-        })
+        if (this.typeMenu === 'horizontal') {
+          dynamics.animate(this.pathCellsHorizontal, {
+            [currentProperty.replace('-', '')]: 2,
+            [nextProperty.replace('-', '')]: 80
+          }, {
+            type: dynamics.easeInOut,
+            duration: 500,
+            friction: 300,
+            complete: function () {
+              that.selectedOption = val
+            }
+          })
+        } else if (this.typeMenu === 'vertical') {
+          dynamics.animate(this.pathCellsVertical, {
+            [currentProperty.replace('-', '')]: 148,
+            [nextProperty.replace('-', '')]: 2
+          }, {
+            type: dynamics.easeInOut,
+            duration: 500,
+            friction: 300,
+            complete: function () {
+              that.selectedOption = val
+            }
+          })
+        }
       }
       // this.selectedOption = val
       // this.$refs[this.selectedOption][0].style.color = '#0012ff'
@@ -189,54 +198,20 @@ export default {
     beforeEnter (el) {
       el.style.transform = 'translateY(' + this.menuPositionY + 'px)'
     },
-    afterEnter (el) {
-      // dynamics.animate(el, {
-      //   translateY: this.menuPositionY
-      // }, {
-      //   type: dynamics.easeInOut,
-      //   duration: 500,
-      //   friction: 300
-      // })
-      // dynamics.animate(this.$refs.svgHeader, {
-      //   translateY: this.menuPositionY
-      // }, {
-      //   type: dynamics.easeInOut,
-      //   duration: 500,
-      //   friction: 300
-      // })
-    },
-    beforeLeave (el) {
-      // el.style.transform = 'translateY(' + this.menuPositionY + 'px)'
-    },
     calculateMiddlePoint (value) {
       return ((value + 33) < 148 ? value + 33 : 148)
     },
     swipe (val) {
-      // dynamics.animate(this.$refs.stringMenu, {
-      //   translateY: val
-      // }, {
-      //   type: dynamics.easeInOut,
-      //   duration: 200,
-      //   friction: 200
-      // })
-      // dynamics.animate(this.$refs.svgHeader, {
-      //   translateY: val
-      // }, {
-      //   type: dynamics.easeInOut,
-      //   duration: 200,
-      //   friction: 200
-      // })
       this.$refs.stringMenu.style.transform = 'translateY(' + val + 'px)'
       this.$refs.svgHeader.style.transform = 'translateY(' + val + 'px)'
     },
-    onPanStart (event) {
+    onPanStart () {
       this.panstart = this.menuPositionY
     },
     onPanDown (event) {
       if (this.menuPositionY < 0) {
         this.menuPositionY = event.deltaY + this.panstart
       } else {
-
         this.menuPositionY = 0
       }
       this.swipe(this.menuPositionY)
@@ -252,8 +227,12 @@ export default {
     changeMenu () {
       var that = this
       if (this.menuClosed) {
-        this.isEnabledTouch = true
-        this.$refs.containerMobile.style.right = '0'
+        if (this.$refs.containerVertical.clientHeight > screen.height * 0.8) {
+          this.isEnabledTouch = true
+        } else {
+          this.isEnabledTouch = false
+        }
+        this.$refs.containerVertical.style.right = '0'
         dynamics.animate(this.menuProperties.line1, {
           y: 30
         }, {
@@ -278,7 +257,7 @@ export default {
           complete: function () {
             that.showMenu = true
             let currentProperty = that.selectedOption
-            dynamics.animate(that.pathCells, {
+            dynamics.animate(that.pathCellsVertical, {
               [currentProperty.replace('-', '')]: 2
             }, {
               type: dynamics.easeInOut,
@@ -306,7 +285,7 @@ export default {
       } else {
         this.isEnabledTouch = false
         let currentProperty = this.selectedOption
-        dynamics.animate(this.pathCells, {
+        dynamics.animate(this.pathCellsVertical, {
           [currentProperty.replace('-', '')]: 148
         }, {
           type: dynamics.easeInOut,
@@ -348,7 +327,7 @@ export default {
                   duration: 250,
                   friction: 300
                 })
-                that.$refs.containerMobile.style.right = '-200px'
+                that.$refs.containerVertical.style.right = '-200px'
               }
             })
           }
@@ -357,96 +336,92 @@ export default {
       this.menuClosed = !this.menuClosed
     },
     updateOption (option) {
-      if (this.selectedOption !== option.value) {
+      if (this.selectedOption !== option.value && this.resolutionSwitching) {
         var that = this
+        this.resolutionSwitching = false
         let currentProperty = this.selectedOption
         let nextProperty = option.value
-      /*  dynamics.animate(this.pathCells, {
-          [currentProperty.replace('-', '')]: 2,
-          [nextProperty.replace('-', '')]: 80
-        }, {
-          type: dynamics.easeInOut,
-          duration: 500,
-          friction: 300,
-          complete: function () {
-            that.selectedOption = option.value
-            that.$emit('updateOption', that.selectedOption)
-          }
-        })*/
-        let index = this.options.findIndex(x => x.value === nextProperty)
-        let h = index * 50
-        if (h > screen.height * 0.3 && that.$refs.containerMobile.clientHeight > screen.height * 0.8) {
-          let hx = h - 100
-          this.menuPositionY = -hx
-          dynamics.animate(that.$refs.stringMenu, {
-            translateY: -hx
+        if (this.typeMenu === 'horizontal') {
+          dynamics.animate(this.pathCellsHorizontal, {
+            [currentProperty.replace('-', '')]: 2,
+            [nextProperty.replace('-', '')]: 80
           }, {
             type: dynamics.easeInOut,
             duration: 500,
-            friction: 300
+            friction: 300,
+            complete: function () {
+              that.selectedOption = option.value
+              that.$emit('updateOption', that.selectedOption)
+              that.resolutionSwitching = true
+            }
           })
-          dynamics.animate(that.$refs.svgHeader, {
-            translateY: -hx
-          }, {
-            type: dynamics.easeInOut,
-            duration: 500,
-            friction: 300
-          })
-        } else {
-          var matrix = new WebKitCSSMatrix(that.$refs.stringMenu.style.webkitTransform)
-          if (matrix.m42 !== 0) {
+        } else if (this.typeMenu === 'vertical') {
+          let index = this.options.findIndex(x => x.value === nextProperty)
+          let h = index * 50
+          if (h > screen.height * 0.3 && that.$refs.containerVertical.clientHeight > screen.height * 0.8) {
+            let hx = h - 100
+            this.menuPositionY = -hx
             dynamics.animate(that.$refs.stringMenu, {
-              translateY: 0
+              translateY: -hx
             }, {
               type: dynamics.easeInOut,
               duration: 500,
               friction: 300
             })
             dynamics.animate(that.$refs.svgHeader, {
-              translateY: 0
+              translateY: -hx
             }, {
               type: dynamics.easeInOut,
               duration: 500,
               friction: 300
             })
+          } else {
+            var matrix = new WebKitCSSMatrix(that.$refs.stringMenu.style.webkitTransform)
+            if (matrix.m42 !== 0) {
+              dynamics.animate(that.$refs.stringMenu, {
+                translateY: 0
+              }, {
+                type: dynamics.easeInOut,
+                duration: 500,
+                friction: 300
+              })
+              dynamics.animate(that.$refs.svgHeader, {
+                translateY: 0
+              }, {
+                type: dynamics.easeInOut,
+                duration: 500,
+                friction: 300
+              })
+            }
           }
+          dynamics.animate(this.pathCellsVertical, {
+            [currentProperty.replace('-', '')]: 148,
+            [nextProperty.replace('-', '')]: 2
+          }, {
+            type: dynamics.easeInOut,
+            duration: 500,
+            friction: 300,
+            complete: function () {
+              that.selectedOption = option.value
+              that.$emit('updateOption', that.selectedOption)
+              that.resolutionSwitching = true
+            }
+          })
         }
-        dynamics.animate(this.pathCells, {
-          [currentProperty.replace('-', '')]: 148,
-          [nextProperty.replace('-', '')]: 2
-        }, {
-          type: dynamics.easeInOut,
-          duration: 500,
-          friction: 300,
-          complete: function () {
-            that.selectedOption = option.value
-            that.$emit('updateOption', that.selectedOption)
-          }
-        })
-
-        // this.pathCells[currentProperty.replace('-', '')] = 2
-        // this.pathCells[nextProperty.replace('-', '')] = 80
-        // this.$refs[this.selectedOption][0].style.color = '#dfefff'
-        // this.selectedOption = option.value
-        // this.$refs[this.selectedOption][0].style.color = '#0012ff'
       }
     }
   },
   mounted () {
-    // this.$refs[this.selectedOption][0].style.color = '#0012ff'
-    // let currentProperty = this.selectedOption
-    // this.pathCells[currentProperty.replace('-', '')] = 80
-    // this.pathCells[currentProperty.replace('-', '')] = 2
-    // this.parentWidth = this.$refs.svgHeader.clientWidth
-    // console.log(this.pathCells)
+    let currentProperty = this.selectedOption
+    this.pathCellsHorizontal[currentProperty.replace('-', '')] = 80
   }
 }
 </script>
 
 <style scoped>
-  .container {
+  .container-horizontal {
     min-width: 160px;
-    height: 100px;
+    height: 50px;
     position: absolute;
     right: 0;
     padding: 0px;
@@ -454,7 +429,7 @@ export default {
     vertical-align: middle;
   }
 
-  .container-mobile {
+  .container-vertical {
     width: 150px;
     height: 350px;
     position: absolute;
@@ -483,6 +458,7 @@ export default {
     position: absolute;
     /*top: 0;*/
     /*left: 0;*/
+    height: 130%;
     z-index: 0;
     display: flex;
     align-items: center;
@@ -490,7 +466,7 @@ export default {
     overflow-y:auto;
   }
 
-  .link {
+  .link-horizontal {
     position: relative;
     float:left;
     width: 160px;
@@ -505,7 +481,7 @@ export default {
     z-index: 9999;
   }
 
-  .link-mobile {
+  .link-vertical {
     position: relative;
     float:left;
     height: 50px;

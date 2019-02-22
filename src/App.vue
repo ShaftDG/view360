@@ -34,10 +34,11 @@
     <p v-if="showMsg">{{greeting}}</p>
     <!--<shaft-button @click="onStartTest(true)">Begin test</shaft-button>-->
     <!--<shaft-button @click="onEndTest(false)">End test</shaft-button>-->
-    <shaft-navbar :options="scenes"
+    <shaft-navbar :typeMenu="typeMenu"
+                  :options="scenes"
                   :selected="currentSceneName"
                   @updateOption="onChangeLocation($event)"
-                  :placeholder="'Select an Item'">
+                 >
     </shaft-navbar>
     <div class="hint" ref="hint" v-if="showHint">
       {{textHint}}
@@ -97,6 +98,7 @@ export default {
         { text: 'scene6', value: 'scene6' },
         { text: 'scene7', value: 'scene7' }
       ],
+      typeMenu: 'horizontal',
       currentScene: null,
       tempSceneName: null,
       showModal: false,
@@ -186,6 +188,11 @@ export default {
     this.hint = this.$refs.hint
     this.$nextTick(function () {
       // this.changeVisibleVUEView(true)
+      if ((this.scenes.length * 160 + 100) > screen.width) {
+        this.typeMenu = 'vertical'
+      } else {
+        this.typeMenu = 'horizontal'
+      }
       if (BABYLON.Engine.isSupported()) {
         var scope = this
         var canvas = document.getElementById('renderCanvas')
@@ -472,7 +479,7 @@ export default {
               textHint: 'Духовой шкаф',
               positionElement: new BABYLON.Vector3(355, -99, 929),
               rotationElement: new BABYLON.Vector3(0, 0, 0),
-              url: 'modal/kitchen/index1.html'
+              url: 'modal/kitchen/index14.html'
             },
           ]
         }
@@ -610,6 +617,11 @@ export default {
         })
         window.addEventListener('resize', function () {
           engine.resize()
+          if ((scope.scenes.length * 160 + 100) > screen.width) {
+            scope.typeMenu = 'vertical'
+          } else {
+            scope.typeMenu = 'horizontal'
+          }
         })
       }
     })
