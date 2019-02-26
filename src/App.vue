@@ -64,6 +64,9 @@
         <h2>You correctly marked {{resultTest}} items out of {{numElements}}</h2>
       </div>
     </shaft-modal>
+
+      {{ info }}
+
   </div>
   <div v-else class="loadView">
     <LoadView/>
@@ -75,6 +78,9 @@ import BABYLON from 'babylonjs'
 import 'babylonjs-gui'
 import LoadView from './views/LoadView.vue'
 import ShaftNavbar from './components/ShaftNavbar'
+import ShaftModal from './components/ShaftModal'
+import { Base64 } from 'js-base64'
+import axios from 'axios'
 
 import CreateCustomScene from './libs/CreateCustomScene'
 
@@ -109,7 +115,8 @@ export default {
         src: 'http://192.168.1.55:8080',
         style: null,
         wrapperStyle: null
-      }
+      },
+      info: null
     }
   },
   computed: {
@@ -176,7 +183,8 @@ export default {
   },
   components: {
     LoadView,
-    ShaftNavbar
+    ShaftNavbar,
+    ShaftModal
   },
   created: function () {
     window.addEventListener('mousemove',this.onMoveMouseGlobal);
@@ -188,6 +196,28 @@ export default {
     this.hint = this.$refs.hint
     this.$nextTick(function () {
       // this.changeVisibleVUEView(true)
+
+      if (Base64.extendString) {
+        Base64.extendString();
+      //   // once extended, you can do the following
+      //   console.log('shaft'.toBase64())       // ZGFua29nYWk=
+      //   console.log('小飼弾'.toBase64())         // 5bCP6aO85by+
+      //   console.log('小飼弾'.toBase64(true))     // 5bCP6aO85by-
+      //   console.log('小飼弾'.toBase64URI())     // 5bCP6aO85by-
+      //   console.log('ZGFua29nYWk='.fromBase64()) // dankogai
+      //   console.log('5bCP6aO85by+'.fromBase64()) // 小飼弾
+      //   console.log('5bCP6aO85by-'.fromBase64()) // 小飼弾
+        var userName = 'shaft'
+        axios
+          .post('https://reqres.in/api/users', { 'name': userName.toBase64(), 'job': 'garden' })
+          .then(function (response) {
+            console.log(response)
+          })
+          .catch(function (error) {
+            console.log(error)
+          })
+      }
+
       if ((this.scenes.length * 160 + 100) > screen.width) {
         this.typeMenu = 'vertical'
       } else {
@@ -506,7 +536,183 @@ export default {
               rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
             }
           ],
-          interactiveElements: []
+          interactiveElements: [
+            {
+              nameElement: '1',
+              textHint: 'Пеленальный столик',
+              positionElement: new BABYLON.Vector3(850, -147, -503),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index1.html'
+            },
+            {
+              nameElement: '2',
+              textHint: 'Детская кровать (прутья)',
+              positionElement: new BABYLON.Vector3(-514, -459, -722),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index1.html'
+            },
+            {
+              nameElement: '3',
+              textHint: 'Детская кровать (дно)',
+              positionElement: new BABYLON.Vector3(-687, -553, -468),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index1.html'
+            },
+            {
+              nameElement: '4',
+              textHint: 'Детская кровать (матрац)',
+              positionElement: new BABYLON.Vector3(-644, -455, -613),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index1.html'
+            },
+            {
+              nameElement: '5',
+              textHint: 'Детская кровать (подушка)',
+              positionElement: new BABYLON.Vector3(-640, -218, -735),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index1.html'
+            },
+            {
+              nameElement: '6',
+              textHint: 'Детская кровать (одеяло)',
+              positionElement: new BABYLON.Vector3(-709, -347, -612),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index1.html'
+            },
+            {
+              nameElement: '7',
+              textHint: 'Детская кровать (бортики)',
+              positionElement: new BABYLON.Vector3(-513, -186, -838),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index1.html'
+            },
+            {
+              nameElement: '8',
+              textHint: 'Коляска',
+              positionElement: new BABYLON.Vector3(-171, -303, 936),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index1.html'
+            },
+            {
+              nameElement: '9',
+              textHint: 'Обогреватель',
+              positionElement: new BABYLON.Vector3(736, 115, -665),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index1.html'
+            },
+            {
+              nameElement: '10',
+              textHint: 'увлажнитель? - не знаю, как показать низкую влажность. Это уже как решение',
+              positionElement: new BABYLON.Vector3(748, -89, 657),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index1.html'
+            },
+            {
+              nameElement: '11',
+              textHint: 'Угля и острая кромка мебели',
+              positionElement: new BABYLON.Vector3(906, -134, 396),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index1.html'
+            },
+            {
+              nameElement: '12',
+              textHint: 'Розетки',
+              positionElement: new BABYLON.Vector3(-863, -492, -93),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index1.html'
+            },
+            {
+              nameElement: '13',
+              textHint: 'Провода, удлинитель',
+              positionElement: new BABYLON.Vector3(776, 62, 625),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index1.html'
+            },
+            {
+              nameElement: '14',
+              textHint: 'Мелкие предметы',
+              positionElement: new BABYLON.Vector3(118, -637, 760),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index1.html'
+            },
+            {
+              nameElement: '15',
+              textHint: 'Комод, шкаф',
+              positionElement: new BABYLON.Vector3(384, -183, 904),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index1.html'
+            },
+            {
+              nameElement: '16',
+              textHint: 'Окна',
+              positionElement: new BABYLON.Vector3(-45, 126, -989),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index1.html'
+            },
+            {
+              nameElement: '17',
+              textHint: 'Двери',
+              positionElement: new BABYLON.Vector3(-968, 14, 243),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index1.html'
+            },
+            {
+              nameElement: '18',
+              textHint: 'Шторы, портьеры, жалюзи',
+              positionElement: new BABYLON.Vector3(602, -23, -797),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index1.html'
+            },
+            {
+              nameElement: '19',
+              textHint: 'Радионяня: это тоже уже как решение контроля за состоянием ребенка',
+              positionElement: new BABYLON.Vector3(-141, -467, -871),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index1.html'
+            },
+            {
+              nameElement: '20',
+              textHint: 'Ночник: это тоже уже как решение контроля за состоянием ребенка',
+              positionElement: new BABYLON.Vector3(814, -63, -574),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index1.html'
+            },
+            {
+              nameElement: '21',
+              textHint: 'Шезлонг - укачиватель',
+              positionElement: new BABYLON.Vector3(914, -381, 129),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index1.html'
+            },
+            {
+              nameElement: '22',
+              textHint: 'Кормление (бутылочка с водой или соком, не со смесью)',
+              positionElement: new BABYLON.Vector3(757, -315, 570),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index1.html'
+            },
+            {
+              nameElement: '23',
+              textHint: 'Точка на коврике на полу - скользкий, ребенок может поскользнуться',
+              positionElement: new BABYLON.Vector3(644, -696, -313),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index1.html'
+            },
+            {
+              nameElement: '24',
+              textHint: 'Шуфляды в пеленальном столике',
+              positionElement: new BABYLON.Vector3(801, -342, -489),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index1.html'
+            },
+            {
+              nameElement: '25',
+              textHint: 'Разбросанные игрушки - может на них поскользнуться и упасть',
+              positionElement: new BABYLON.Vector3(-705, -707, -21),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index1.html'
+            }
+          ]
         }
         var scene4 = new CreateCustomScene(parameters4, scope, engine, canvas)
         scenesMap = [ ...scenesMap, scene4 ]
@@ -531,7 +737,134 @@ export default {
               rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
             }
           ],
-          interactiveElements: []
+          interactiveElements: [
+            {
+              nameElement: '1',
+              textHint: 'Пол/коврик',
+              positionElement: new BABYLON.Vector3(451, -630, -630),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index1.html'
+            },
+            {
+              nameElement: '2',
+              textHint: 'Вода в ванне',
+              positionElement: new BABYLON.Vector3(-519, -340, -782),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index1.html'
+            },
+            {
+              nameElement: '3',
+              textHint: 'Кран в ванной',
+              positionElement: new BABYLON.Vector3(-725, -283, -629),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index1.html'
+            },
+            {
+              nameElement: '4',
+              textHint: 'Резиновые игрушки',
+              positionElement: new BABYLON.Vector3(-652, -406, -638),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index1.html'
+            },
+            {
+              nameElement: '5',
+              textHint: 'Душевая кабина',
+              positionElement: new BABYLON.Vector3(-491, 102, 863),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index1.html'
+            },
+            {
+              nameElement: '6',
+              textHint: 'Стиральная машина',
+              positionElement: new BABYLON.Vector3(580, -254, -773),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index1.html'
+            },
+            {
+              nameElement: '7',
+              textHint: 'Моющие средства',
+              positionElement: new BABYLON.Vector3(-696, -706, -116),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index1.html'
+            },
+            {
+              nameElement: '8',
+              textHint: 'Косметические средства, лекарства',
+              positionElement: new BABYLON.Vector3(554, -71, -828),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index1.html'
+            },
+            {
+              nameElement: '8-1',
+              textHint: 'Косметические средства, лекарства',
+              positionElement: new BABYLON.Vector3(-146, -131, 979),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index1.html'
+            },
+            {
+              nameElement: '9',
+              textHint: 'Унитаз',
+              positionElement: new BABYLON.Vector3(-68, -352, -933),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index1.html'
+            },
+            {
+              nameElement: '10',
+              textHint: 'Электроприборы',
+              positionElement: new BABYLON.Vector3(968, 42, 237),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index1.html'
+            },
+            {
+              nameElement: '11',
+              textHint: 'Зеркало, стеклянные полки',
+              positionElement: new BABYLON.Vector3(945, 126, -296),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index1.html'
+            },
+            {
+              nameElement: '12',
+              textHint: 'Углы и острая кромка мебели',
+              positionElement: new BABYLON.Vector3(358, -168, 918),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index1.html'
+            },
+            {
+              nameElement: '13',
+              textHint: 'Розетки',
+              positionElement: new BABYLON.Vector3(989, -123, 55),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index1.html'
+            },
+            {
+              nameElement: '14',
+              textHint: 'Провода, удлинитель',
+              positionElement: new BABYLON.Vector3(919, -242, -304),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index1.html'
+            },
+            {
+              nameElement: '15',
+              textHint: 'Комод, шкаф',
+              positionElement: new BABYLON.Vector3(52, -403, 912),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index1.html'
+            },
+            {
+              nameElement: '16',
+              textHint: 'Двери',
+              positionElement: new BABYLON.Vector3(824, -5, 564),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index1.html'
+            },
+            {
+              nameElement: '17',
+              textHint: 'Средства для чистки труб',
+              positionElement: new BABYLON.Vector3(-832, -552, -10),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/livingroom/index1.html'
+            }
+          ]
         }
         var bathroom = new CreateCustomScene(parameters5, scope, engine, canvas)
         scenesMap = [ ...scenesMap, bathroom ]

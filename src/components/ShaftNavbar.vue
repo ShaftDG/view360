@@ -192,6 +192,22 @@ export default {
       }
       // this.selectedOption = val
       // this.$refs[this.selectedOption][0].style.color = '#0012ff'
+    },
+    typeMenu: function (val) {
+      let currentProperty = this.selectedOption
+      if (this.typeMenu === 'horizontal') {
+        for (let i in this.pathCellsHorizontal) {
+          this.pathCellsHorizontal[i] = 2
+        }
+        this.pathCellsHorizontal[currentProperty.replace('-', '')] = 80
+      } else if (this.typeMenu === 'vertical') {
+        this.menuClosed = false
+        this.changeMenu()
+        for (let i in this.pathCellsVertical) {
+          this.pathCellsVertical[i] = 148
+        }
+        this.pathCellsVertical[currentProperty.replace('-', '')] = 2
+      }
     }
   },
   methods: {
@@ -458,6 +474,7 @@ export default {
     position: absolute;
     /*top: 0;*/
     /*left: 0;*/
+    right: 0;
     height: 130%;
     z-index: 0;
     display: flex;

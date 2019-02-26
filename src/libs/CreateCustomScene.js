@@ -23,7 +23,7 @@ export default function CreateCustomScene (parameters, scope, engine, canvas) {
   camera.setTarget(parameters.cameraTarget)
   // camera.attachControl(canvas, false)
   camera.fov = 1.3
-  camera.inertia = 0.5
+  camera.inertia = 0.75
   camera.lowerRadiusLimit = camera.upperRadiusLimit = camera.radius
   camera.lowerBetaLimit = 0
   camera.upperBetaLimit = 2.0
