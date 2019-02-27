@@ -75,17 +75,24 @@ export default {
   }
 
   .modal-container-congratulations {
-    width: 40%;
-    height: 25%;
+    width: 250px;
+    height: 100px;
     margin: 0px auto;
     padding: 10px 15px;
     background-color: rgba(0, 0, 0, .25);
     border-radius: 2px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
     transition: all .3s ease;
-    font-size: 24px;
+    font-size: 16px;
     color: #ade6ff;
     font-family: Helvetica, Arial, sans-serif;
+  }
+
+  .modal-container-empty {
+    width: 250px;
+    height: 145px;
+    background-color: rgba(0, 0, 0, 0);
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
   }
 
   .modal-header{
@@ -101,6 +108,7 @@ export default {
   .modal-body {
     height: 99%;
     margin: 0;
+    text-align: center;
   }
 
   .modal-default-button {

@@ -22,7 +22,7 @@ export default function CreateCustomScene (parameters, scope, engine, canvas) {
   // scene.showFps()
   camera.setTarget(parameters.cameraTarget)
   // camera.attachControl(canvas, false)
-  camera.fov = 1.3
+  camera.fov = 1.4
   camera.inertia = 0.75
   camera.lowerRadiusLimit = camera.upperRadiusLimit = camera.radius
   camera.lowerBetaLimit = 0
@@ -174,9 +174,9 @@ export default function CreateCustomScene (parameters, scope, engine, canvas) {
     pushButton.onPointerUpObservable.add (function (a, b) {
       if (b.target.isEnabled) {
         if (scope.testStarted) {
-          scope.resultTest += 1
           if (!b.target.mesh.visibility) {
             b.target.mesh.visibility = !b.target.mesh.visibility
+            scope.resultTest += 1
           }
         } else {
           scope.showHint = false
@@ -188,6 +188,21 @@ export default function CreateCustomScene (parameters, scope, engine, canvas) {
       }
     })
   }
+
+  var flag = false
+  canvas.addEventListener('pointerdown', function () {
+    flag = true
+  }, false)
+  canvas.addEventListener('pointermove', function () {
+    flag = false
+  }, false)
+  canvas.addEventListener('pointerup', function (e) {
+    if (flag) {
+      if (scope.testStarted && scene.name === scope.currentSceneName) {
+        scope.attempts -= 1
+      }
+    }
+  }, false)
 
   scene.registerBeforeRender(function () {
     if (scene.isTransitionSceneOff) {
@@ -228,8 +243,13 @@ export default function CreateCustomScene (parameters, scope, engine, canvas) {
           }
         }
       })
-      if (count >= parameters.interactiveElements.length) {
-      //  scope.testMode = false
+      if (
+        (count >= parameters.interactiveElements.length ||
+        scope.attempts <= 0) &&
+        scope.testStarted
+      ) {
+        scope.attempts = parameters.interactiveElements.length * 2
+        scope.sendResult()
         scope.testStarted = false
         scope.testEnded = !scope.testStarted
       }

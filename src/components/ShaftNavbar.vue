@@ -88,9 +88,9 @@ export default {
         childroom: 2,
         kitchen: 2,
         livingroom: 2,
-        scene1: 2,
-        scene6: 2,
-        scene7: 2
+        outsidearea: 2,
+        hall: 2,
+        bedroom: 2
       },
       menuClosed: true,
       resolutionSwitching: true,
@@ -107,21 +107,21 @@ export default {
         childroom: 148,
         kitchen: 148,
         livingroom: 148,
-        scene1: 148,
-        scene6: 148,
-        scene7: 148
+        outsidearea: 148,
+        hall: 148,
+        bedroom: 148
       }
     }
   },
   computed: {
     headerPathHorizontal: function () {
-      return 'M2 2 C 0 ' + this.pathCellsHorizontal.scene1 + ', 160 ' + this.pathCellsHorizontal.scene1 + ', 160 2 ' +
-      'C 160 ' + this.pathCellsHorizontal.livingroom + ', 320 ' + this.pathCellsHorizontal.livingroom + ', 320 2' +
+      return 'M2 2 C 0 ' + this.pathCellsHorizontal.hall + ', 160 ' + this.pathCellsHorizontal.hall + ', 160 2 ' +
+      'C 160 ' + this.pathCellsHorizontal.outsidearea + ', 320 ' + this.pathCellsHorizontal.outsidearea + ', 320 2' +
       'C 320 ' + this.pathCellsHorizontal.kitchen + ', 480 ' + this.pathCellsHorizontal.kitchen + ', 480 2' +
-      'C 480 ' + this.pathCellsHorizontal.childroom + ', 640 ' + this.pathCellsHorizontal.childroom + ', 640 2' +
-      'C 640 ' + this.pathCellsHorizontal.bathroom + ', 800 ' + this.pathCellsHorizontal.bathroom + ', 800 2' +
-      'C 800 ' + this.pathCellsHorizontal.scene6 + ', 960 ' + this.pathCellsHorizontal.scene6 + ', 960 2' +
-      'C 960 ' + this.pathCellsHorizontal.scene7 + ', 1120 ' + this.pathCellsHorizontal.scene7 + ', 1120 2'
+      'C 480 ' + this.pathCellsHorizontal.livingroom + ', 640 ' + this.pathCellsHorizontal.livingroom + ', 640 2' +
+      'C 640 ' + this.pathCellsHorizontal.childroom + ', 800 ' + this.pathCellsHorizontal.childroom + ', 800 2' +
+      'C 800 ' + this.pathCellsHorizontal.bathroom + ', 960 ' + this.pathCellsHorizontal.bathroom + ', 960 2' +
+      'C 960 ' + this.pathCellsHorizontal.bedroom + ', 1120 ' + this.pathCellsHorizontal.bedroom + ', 1120 2'
     },
     menuPath1: function () {
       return 'M' + this.menuProperties.line1.x + ' ' + this.menuProperties.line1.y + ' L ' + this.menuProperties.line1.x1 + ' ' + this.menuProperties.line1.y1
@@ -134,26 +134,26 @@ export default {
     },
     headerPathVertical: function () {
       return 'M148 3 ' +
-        'L ' + this.calculateMiddlePoint(this.pathCellsVertical.scene1) + ' 3' +
-        'C ' + this.pathCellsVertical.scene1 + ' 0, ' + this.pathCellsVertical.scene1 + ' 50, ' + this.calculateMiddlePoint(this.pathCellsVertical.scene1) + ' 50 ' +
+        'L ' + this.calculateMiddlePoint(this.pathCellsVertical.hall) + ' 3' +
+        'C ' + this.pathCellsVertical.hall + ' 0, ' + this.pathCellsVertical.hall + ' 50, ' + this.calculateMiddlePoint(this.pathCellsVertical.hall) + ' 50 ' +
         'L 148 50' +
-        'L ' + this.calculateMiddlePoint(this.pathCellsVertical.livingroom) + ' 50' +
-        'C ' + this.pathCellsVertical.livingroom + ' 50, ' + this.pathCellsVertical.livingroom + ' 100, ' + this.calculateMiddlePoint(this.pathCellsVertical.livingroom) + ' 100' +
+        'L ' + this.calculateMiddlePoint(this.pathCellsVertical.outsidearea) + ' 50' +
+        'C ' + this.pathCellsVertical.outsidearea + ' 50, ' + this.pathCellsVertical.outsidearea + ' 100, ' + this.calculateMiddlePoint(this.pathCellsVertical.outsidearea) + ' 100' +
         'L 148 100' +
         'L ' + this.calculateMiddlePoint(this.pathCellsVertical.kitchen) + ' 100' +
         'C ' + this.pathCellsVertical.kitchen + ' 100, ' + this.pathCellsVertical.kitchen + ' 150, ' + this.calculateMiddlePoint(this.pathCellsVertical.kitchen) + ' 150' +
         'L 148 150' +
-        'L ' + this.calculateMiddlePoint(this.pathCellsVertical.childroom) + ' 150' +
-        'C ' + this.pathCellsVertical.childroom + ' 150, ' + this.pathCellsVertical.childroom + ' 200, ' + this.calculateMiddlePoint(this.pathCellsVertical.childroom) + ' 200' +
+        'L ' + this.calculateMiddlePoint(this.pathCellsVertical.livingroom) + ' 150' +
+        'C ' + this.pathCellsVertical.livingroom + ' 150, ' + this.pathCellsVertical.livingroom + ' 200, ' + this.calculateMiddlePoint(this.pathCellsVertical.livingroom) + ' 200' +
         'L 148 200' +
-        'L ' + this.calculateMiddlePoint(this.pathCellsVertical.bathroom) + ' 200' +
-        'C ' + this.pathCellsVertical.bathroom + ' 200, ' + this.pathCellsVertical.bathroom + ' 250, ' + this.calculateMiddlePoint(this.pathCellsVertical.bathroom) + ' 250' +
+        'L ' + this.calculateMiddlePoint(this.pathCellsVertical.childroom) + ' 200' +
+        'C ' + this.pathCellsVertical.childroom + ' 200, ' + this.pathCellsVertical.childroom + ' 250, ' + this.calculateMiddlePoint(this.pathCellsVertical.childroom) + ' 250' +
         'L 148 250' +
-        'L ' + this.calculateMiddlePoint(this.pathCellsVertical.scene6) + ' 250' +
-        'C ' + this.pathCellsVertical.scene6 + ' 250, ' + this.pathCellsVertical.scene6 + ' 300, ' + this.calculateMiddlePoint(this.pathCellsVertical.scene6) + ' 300' +
+        'L ' + this.calculateMiddlePoint(this.pathCellsVertical.bathroom) + ' 250' +
+        'C ' + this.pathCellsVertical.bathroom + ' 250, ' + this.pathCellsVertical.bathroom + ' 300, ' + this.calculateMiddlePoint(this.pathCellsVertical.bathroom) + ' 300' +
         'L 148 300' +
-        'L ' + this.calculateMiddlePoint(this.pathCellsVertical.scene7) + ' 300' +
-        'C ' + this.pathCellsVertical.scene7 + ' 300, ' + this.pathCellsVertical.scene7 + ' 350, ' + this.calculateMiddlePoint(this.pathCellsVertical.scene7) + ' 350' +
+        'L ' + this.calculateMiddlePoint(this.pathCellsVertical.bedroom) + ' 300' +
+        'C ' + this.pathCellsVertical.bedroom + ' 300, ' + this.pathCellsVertical.bedroom + ' 350, ' + this.calculateMiddlePoint(this.pathCellsVertical.bedroom) + ' 350' +
         'L 148 350'
     }
   },
@@ -243,7 +243,7 @@ export default {
     changeMenu () {
       var that = this
       if (this.menuClosed) {
-        if (this.$refs.containerVertical.clientHeight > screen.height * 0.8) {
+        if (this.$refs.containerVertical.clientHeight >  window.innerHeight * 0.8) {
           this.isEnabledTouch = true
         } else {
           this.isEnabledTouch = false
@@ -308,9 +308,11 @@ export default {
           duration: 300,
           friction: 300,
           complete: function () {
-            that.$refs.path.classList.remove('open')
-            that.$refs.path.classList.add('close')
-            that.$refs.path.style.fill = 'transparent'
+            if (that.$refs.path) {
+              that.$refs.path.classList.remove('open')
+              that.$refs.path.classList.add('close')
+              that.$refs.path.style.fill = 'transparent'
+            }
             that.showMenu = false
             dynamics.animate(that.menuProperties.line1, {
               y: 4
@@ -343,7 +345,9 @@ export default {
                   duration: 250,
                   friction: 300
                 })
-                that.$refs.containerVertical.style.right = '-200px'
+                if (that.$refs.containerVertical) {
+                  that.$refs.containerVertical.style.right = '-200px'
+                }
               }
             })
           }
@@ -374,7 +378,7 @@ export default {
         } else if (this.typeMenu === 'vertical') {
           let index = this.options.findIndex(x => x.value === nextProperty)
           let h = index * 50
-          if (h > screen.height * 0.3 && that.$refs.containerVertical.clientHeight > screen.height * 0.8) {
+          if (h > window.innerHeight * 0.3 && that.$refs.containerVertical.clientHeight >  window.innerHeight * 0.8) {
             let hx = h - 100
             this.menuPositionY = -hx
             dynamics.animate(that.$refs.stringMenu, {
@@ -512,6 +516,11 @@ export default {
     right: 20px;
     color: #dfefff;
     z-index: 9999;
+  }
+
+  .link-vertical:hover, .link-horizontal:hover{
+    font-size: 26px;
+    text-shadow: 0 -2px 10px #0b3547, 0 -2px 10px #153e61;
   }
 
   .path {
