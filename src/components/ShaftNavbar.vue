@@ -115,13 +115,28 @@ export default {
   },
   computed: {
     headerPathHorizontal: function () {
-      return 'M2 2 C 0 ' + this.pathCellsHorizontal.hall + ', 160 ' + this.pathCellsHorizontal.hall + ', 160 2 ' +
-      'C 160 ' + this.pathCellsHorizontal.outsidearea + ', 320 ' + this.pathCellsHorizontal.outsidearea + ', 320 2' +
-      'C 320 ' + this.pathCellsHorizontal.kitchen + ', 480 ' + this.pathCellsHorizontal.kitchen + ', 480 2' +
-      'C 480 ' + this.pathCellsHorizontal.livingroom + ', 640 ' + this.pathCellsHorizontal.livingroom + ', 640 2' +
-      'C 640 ' + this.pathCellsHorizontal.childroom + ', 800 ' + this.pathCellsHorizontal.childroom + ', 800 2' +
-      'C 800 ' + this.pathCellsHorizontal.bathroom + ', 960 ' + this.pathCellsHorizontal.bathroom + ', 960 2' +
-      'C 960 ' + this.pathCellsHorizontal.bedroom + ', 1120 ' + this.pathCellsHorizontal.bedroom + ', 1120 2'
+      return 'M2 0 ' +
+        'L 2 ' + this.calculateMiddlePointHorizontalMenu(this.pathCellsHorizontal.hall) +
+        'C 2 ' + this.pathCellsHorizontal.hall + ', 160 ' + this.pathCellsHorizontal.hall + ', 160 ' + this.calculateMiddlePointHorizontalMenu(this.pathCellsHorizontal.hall) +
+        'L 160 0' +
+        'L 160 ' + this.calculateMiddlePointHorizontalMenu(this.pathCellsHorizontal.outsidearea) +
+        'C 160 ' + this.pathCellsHorizontal.outsidearea + ', 320 ' + this.pathCellsHorizontal.outsidearea + ', 320 ' + this.calculateMiddlePointHorizontalMenu(this.pathCellsHorizontal.outsidearea) +
+        'L 320 0' +
+        'L 320 ' + this.calculateMiddlePointHorizontalMenu(this.pathCellsHorizontal.kitchen) +
+        'C 320 ' + this.pathCellsHorizontal.kitchen + ', 480 ' + this.pathCellsHorizontal.kitchen + ', 480 ' + this.calculateMiddlePointHorizontalMenu(this.pathCellsHorizontal.kitchen) +
+        'L 480 0' +
+        'L 480 ' + this.calculateMiddlePointHorizontalMenu(this.pathCellsHorizontal.livingroom) +
+        'C 480 ' + this.pathCellsHorizontal.livingroom + ', 640 ' + this.pathCellsHorizontal.livingroom + ', 640 ' + this.calculateMiddlePointHorizontalMenu(this.pathCellsHorizontal.livingroom) +
+        'L 640 0' +
+        'L 640 ' + this.calculateMiddlePointHorizontalMenu(this.pathCellsHorizontal.childroom) +
+        'C 640 ' + this.pathCellsHorizontal.childroom + ', 800 ' + this.pathCellsHorizontal.childroom + ', 800 ' + this.calculateMiddlePointHorizontalMenu(this.pathCellsHorizontal.childroom) +
+        'L 800 0' +
+        'L 800 ' + this.calculateMiddlePointHorizontalMenu(this.pathCellsHorizontal.bathroom) +
+        'C 800 ' + this.pathCellsHorizontal.bathroom + ', 960 ' + this.pathCellsHorizontal.bathroom + ', 960 ' + this.calculateMiddlePointHorizontalMenu(this.pathCellsHorizontal.bathroom) +
+        'L 960 0' +
+        'L 960 ' + this.calculateMiddlePointHorizontalMenu(this.pathCellsHorizontal.bedroom) +
+        'C 960 ' + this.pathCellsHorizontal.bedroom + ', 1120 ' + this.pathCellsHorizontal.bedroom + ', 1118 ' + this.calculateMiddlePointHorizontalMenu(this.pathCellsHorizontal.bedroom) +
+        'L 1118 0'
     },
     menuPath1: function () {
       return 'M' + this.menuProperties.line1.x + ' ' + this.menuProperties.line1.y + ' L ' + this.menuProperties.line1.x1 + ' ' + this.menuProperties.line1.y1
@@ -134,26 +149,26 @@ export default {
     },
     headerPathVertical: function () {
       return 'M148 3 ' +
-        'L ' + this.calculateMiddlePoint(this.pathCellsVertical.hall) + ' 3' +
-        'C ' + this.pathCellsVertical.hall + ' 0, ' + this.pathCellsVertical.hall + ' 50, ' + this.calculateMiddlePoint(this.pathCellsVertical.hall) + ' 50 ' +
+        'L ' + this.calculateMiddlePointVerticalMenu(this.pathCellsVertical.hall) + ' 3' +
+        'C ' + this.pathCellsVertical.hall + ' 0, ' + this.pathCellsVertical.hall + ' 50, ' + this.calculateMiddlePointVerticalMenu(this.pathCellsVertical.hall) + ' 50 ' +
         'L 148 50' +
-        'L ' + this.calculateMiddlePoint(this.pathCellsVertical.outsidearea) + ' 50' +
-        'C ' + this.pathCellsVertical.outsidearea + ' 50, ' + this.pathCellsVertical.outsidearea + ' 100, ' + this.calculateMiddlePoint(this.pathCellsVertical.outsidearea) + ' 100' +
+        'L ' + this.calculateMiddlePointVerticalMenu(this.pathCellsVertical.outsidearea) + ' 50' +
+        'C ' + this.pathCellsVertical.outsidearea + ' 50, ' + this.pathCellsVertical.outsidearea + ' 100, ' + this.calculateMiddlePointVerticalMenu(this.pathCellsVertical.outsidearea) + ' 100' +
         'L 148 100' +
-        'L ' + this.calculateMiddlePoint(this.pathCellsVertical.kitchen) + ' 100' +
-        'C ' + this.pathCellsVertical.kitchen + ' 100, ' + this.pathCellsVertical.kitchen + ' 150, ' + this.calculateMiddlePoint(this.pathCellsVertical.kitchen) + ' 150' +
+        'L ' + this.calculateMiddlePointVerticalMenu(this.pathCellsVertical.kitchen) + ' 100' +
+        'C ' + this.pathCellsVertical.kitchen + ' 100, ' + this.pathCellsVertical.kitchen + ' 150, ' + this.calculateMiddlePointVerticalMenu(this.pathCellsVertical.kitchen) + ' 150' +
         'L 148 150' +
-        'L ' + this.calculateMiddlePoint(this.pathCellsVertical.livingroom) + ' 150' +
-        'C ' + this.pathCellsVertical.livingroom + ' 150, ' + this.pathCellsVertical.livingroom + ' 200, ' + this.calculateMiddlePoint(this.pathCellsVertical.livingroom) + ' 200' +
+        'L ' + this.calculateMiddlePointVerticalMenu(this.pathCellsVertical.livingroom) + ' 150' +
+        'C ' + this.pathCellsVertical.livingroom + ' 150, ' + this.pathCellsVertical.livingroom + ' 200, ' + this.calculateMiddlePointVerticalMenu(this.pathCellsVertical.livingroom) + ' 200' +
         'L 148 200' +
-        'L ' + this.calculateMiddlePoint(this.pathCellsVertical.childroom) + ' 200' +
-        'C ' + this.pathCellsVertical.childroom + ' 200, ' + this.pathCellsVertical.childroom + ' 250, ' + this.calculateMiddlePoint(this.pathCellsVertical.childroom) + ' 250' +
+        'L ' + this.calculateMiddlePointVerticalMenu(this.pathCellsVertical.childroom) + ' 200' +
+        'C ' + this.pathCellsVertical.childroom + ' 200, ' + this.pathCellsVertical.childroom + ' 250, ' + this.calculateMiddlePointVerticalMenu(this.pathCellsVertical.childroom) + ' 250' +
         'L 148 250' +
-        'L ' + this.calculateMiddlePoint(this.pathCellsVertical.bathroom) + ' 250' +
-        'C ' + this.pathCellsVertical.bathroom + ' 250, ' + this.pathCellsVertical.bathroom + ' 300, ' + this.calculateMiddlePoint(this.pathCellsVertical.bathroom) + ' 300' +
+        'L ' + this.calculateMiddlePointVerticalMenu(this.pathCellsVertical.bathroom) + ' 250' +
+        'C ' + this.pathCellsVertical.bathroom + ' 250, ' + this.pathCellsVertical.bathroom + ' 300, ' + this.calculateMiddlePointVerticalMenu(this.pathCellsVertical.bathroom) + ' 300' +
         'L 148 300' +
-        'L ' + this.calculateMiddlePoint(this.pathCellsVertical.bedroom) + ' 300' +
-        'C ' + this.pathCellsVertical.bedroom + ' 300, ' + this.pathCellsVertical.bedroom + ' 350, ' + this.calculateMiddlePoint(this.pathCellsVertical.bedroom) + ' 350' +
+        'L ' + this.calculateMiddlePointVerticalMenu(this.pathCellsVertical.bedroom) + ' 300' +
+        'C ' + this.pathCellsVertical.bedroom + ' 300, ' + this.pathCellsVertical.bedroom + ' 350, ' + this.calculateMiddlePointVerticalMenu(this.pathCellsVertical.bedroom) + ' 350' +
         'L 148 350'
     }
   },
@@ -167,7 +182,7 @@ export default {
         if (this.typeMenu === 'horizontal') {
           dynamics.animate(this.pathCellsHorizontal, {
             [currentProperty.replace('-', '')]: 2,
-            [nextProperty.replace('-', '')]: 80
+            [nextProperty.replace('-', '')]: 70
           }, {
             type: dynamics.easeInOut,
             duration: 500,
@@ -199,7 +214,7 @@ export default {
         for (let i in this.pathCellsHorizontal) {
           this.pathCellsHorizontal[i] = 2
         }
-        this.pathCellsHorizontal[currentProperty.replace('-', '')] = 80
+        this.pathCellsHorizontal[currentProperty.replace('-', '')] = 70
       } else if (this.typeMenu === 'vertical') {
         this.menuClosed = false
         this.changeMenu()
@@ -214,8 +229,11 @@ export default {
     beforeEnter (el) {
       el.style.transform = 'translateY(' + this.menuPositionY + 'px)'
     },
-    calculateMiddlePoint (value) {
+    calculateMiddlePointVerticalMenu (value) {
       return ((value + 33) < 148 ? value + 33 : 148)
+    },
+    calculateMiddlePointHorizontalMenu (value) {
+      return ((value - 35) < 70 && (value - 35) >= 2 ? value - 35 : 2)
     },
     swipe (val) {
       this.$refs.stringMenu.style.transform = 'translateY(' + val + 'px)'
@@ -364,7 +382,7 @@ export default {
         if (this.typeMenu === 'horizontal') {
           dynamics.animate(this.pathCellsHorizontal, {
             [currentProperty.replace('-', '')]: 2,
-            [nextProperty.replace('-', '')]: 80
+            [nextProperty.replace('-', '')]: 70
           }, {
             type: dynamics.easeInOut,
             duration: 500,
@@ -433,7 +451,7 @@ export default {
   },
   mounted () {
     let currentProperty = this.selectedOption
-    this.pathCellsHorizontal[currentProperty.replace('-', '')] = 80
+    this.pathCellsHorizontal[currentProperty.replace('-', '')] = 65
   }
 }
 </script>
@@ -571,7 +589,7 @@ export default {
   .slide-fade-enter-active {
     animation: bounce-in 0.85s;
   }
-  .slide-fade-leave-active {
+  .slide-fade-leave-to {
     animation: bounce-in 0.25s reverse;
   }
 

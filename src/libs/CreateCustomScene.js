@@ -1,17 +1,15 @@
-import BABYLON from 'babylonjs'
+import BABYLON, {Scene, Vector3} from 'babylonjs'
 import AnimationArrow from './AnimationArrow'
 
 export default function CreateCustomScene (parameters, scope, engine, canvas) {
-
   var scene = new BABYLON.Scene(engine)
   scene.name = parameters.nameScene
   scene.clearColor = new BABYLON.Color4(0.3, 0.3, 0.4, 0.75)
-
   var skybox = BABYLON.MeshBuilder.CreateSphere('skyBox', { diameter: 2000 }, scene)
   skybox.isPickable = false
   var skyboxMaterial = new BABYLON.StandardMaterial('skyBox', scene)
   skyboxMaterial.backFaceCulling = false
-  skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture('textures/skybox/' + parameters.cubeMap + '/', scene)
+  skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture('textures/skybox/preview/' + parameters.nameScene + '/', scene)
   skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE
   skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0)
   skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0)
@@ -46,10 +44,20 @@ export default function CreateCustomScene (parameters, scope, engine, canvas) {
   scene.isTransitionSceneOff = false
   scene.isTransitionSceneOn = false
   scene.userData = {
-    buttons: []
+    buttons: [],
+    skybox: skybox
   }
+
+  var setHintPosition = function (mesh) {
+    let transformationMatrix = camera.getViewMatrix().multiply(camera.getProjectionMatrix())
+    let position = mesh.getBoundingInfo().boundingBox.center
+    let projectedPosition = BABYLON.Vector3.Project(position, mesh.computeWorldMatrix(true), transformationMatrix, camera.viewport.toGlobal(camera.getEngine()))
+    scope.positionHint.x = projectedPosition.x
+    scope.positionHint.y = projectedPosition.y
+  }
+
   for (var i = 0; i < parameters.exits.length; i++) {
-    var exitRoom = BABYLON.MeshBuilder.CreatePlane('exitRoom_' + parameters.exits[i].nameExitRoom, { width: 100, height: 80 })
+    var exitRoom = BABYLON.MeshBuilder.CreatePlane('exitRoom_' + parameters.exits[i].nameExitRoom, { width: 200, height: 160 })
     exitRoom.position = parameters.exits[i].positionExitRoom
     exitRoom.rotation = parameters.exits[i].rotationExitRoom
     exitRoom.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL
@@ -78,6 +86,7 @@ export default function CreateCustomScene (parameters, scope, engine, canvas) {
         // var stirng = b.target.userData.meshPlane.name
         // scope.textHint = stirng.split('_')[1].replace('-', ' ')
         scope.textHint = b.target.userData.textHint
+        setHintPosition(b.target.userData.meshPlane)
       }
       // b.target.userData.animation.stop()
     })
@@ -97,109 +106,89 @@ export default function CreateCustomScene (parameters, scope, engine, canvas) {
     })
   }
 
-  BABYLON.Effect.ShadersStore['interactiveElementVertexShader'] = '\r\n' +
-    'precision highp float;\r\n' +
-    '// Attributes\r\n' +
-    'attribute vec3 position;\r\n' +
-    'attribute vec2 uv;\r\n' +
-    '// Uniforms\r\n' +
-    'uniform mat4 worldViewProjection;\r\n' +
-    '// Varying\r\n' +
-    'varying vec2 vUV;\r\n' +
-    'void main(void) {\r\n' +
-    '    gl_Position = worldViewProjection * vec4(position, 1.0);\r\n' +
-    '    vUV = uv;\r\n' +
-    '}\r\n'
-  BABYLON.Effect.ShadersStore['interactiveElementFragmentShader'] = '\r\n' +
-    'precision highp float;\r\n' +
-    'varying vec2 vUV;\r\n' +
-    'uniform sampler2D textureSampler;\r\n' +
-    'void main(void) {\r\n' +
-    '    gl_FragColor = texture2D(textureSampler, vUV);\r\n' +
-    // '    if (gl_FragColor.r <= 0.05 ) discard;\r\n' +
-    '}\r\n'
-
   scope.numElements = parameters.interactiveElements.length
-  var manager = new BABYLON.GUI.GUI3DManager(scene)
   for (var j = 0; j < parameters.interactiveElements.length; j++) {
     var interactiveElement = BABYLON.MeshBuilder.CreatePlane('interactiveElements_' + parameters.interactiveElements[j].nameElement, { width: 150, height: 150 })
-    interactiveElement.setPositionWithLocalVector(parameters.interactiveElements[j].rotationElement)
+    interactiveElement.position = parameters.interactiveElements[j].positionElement
+    interactiveElement.rotation = parameters.interactiveElements[j].rotationElement
     interactiveElement.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL
     interactiveElement.renderingGroupId = 1
-    interactiveElement.userData = {
+    var advancedTextureElement = BABYLON.GUI.AdvancedDynamicTexture.CreateForMesh(interactiveElement)
+    var buttonElement = BABYLON.GUI.Button.CreateImageOnlyButton('butElement_' + parameters.interactiveElements[j].nameElement, 'textures/element.png')
+    if (parameters.interactiveElements[j].nameElement.search(/green\w*/) !== -1) {
+      buttonElement = BABYLON.GUI.Button.CreateImageOnlyButton('butElement_' + parameters.interactiveElements[j].nameElement, 'textures/elementGreen.png')
+    }
+    buttonElement.width = 1
+    buttonElement.height = 1
+    buttonElement.thickness = 0
+    advancedTextureElement.addControl(buttonElement)
+    // buttonElement.hoverCursor = 'pointer'
+    // buttonElement.isPointerBlocker = true
+    buttonElement.isEnabled = false
+    scene.userData.buttons.push(buttonElement)
+    buttonElement.userData = {
+      meshPlane: interactiveElement,
       elemnentURL: parameters.interactiveElements[j].url,
       textHint: parameters.interactiveElements[j].textHint
     }
-    var materialButton = new BABYLON.ShaderMaterial('shader', scene, {
-      vertex: 'interactiveElement',
-      fragment: 'interactiveElement'
-    },
-    {
-      needAlphaBlending: true,
-      attributes: ['position', 'normal', 'uv'],
-      uniforms: ['world', 'worldView', 'worldViewProjection', 'view', 'projection'],
-      samplers: ['textureSampler']
-    })
-    var elementTexture = new BABYLON.Texture('textures/element.png', scene)
-    materialButton.setTexture('textureSampler', elementTexture)
 
-    // var materialButton = new BABYLON.StandardMaterial('materialButton', scene)
-    // materialButton.diffuseTexture = new BABYLON.Texture('textures/arrowUp.png', scene)
-    // materialButton.specularColor = new BABYLON.Color3(0, 0, 0)
-    // materialButton.disableLighting = true
-    interactiveElement.material = materialButton
-    var nodePosition = new BABYLON.TransformNode('')
-    nodePosition.position = parameters.interactiveElements[j].positionElement
-    var pushButton = new BABYLON.GUI.MeshButton3D(interactiveElement, 'button3D_' + parameters.interactiveElements[j].nameElement)
-    manager.addControl(pushButton)
-    pushButton.linkToTransformNode(nodePosition)
-    pushButton.isEnabled = false
-    scene.userData.buttons.push(pushButton)
-    pushButton.onPointerEnterObservable.add(function (a, b) {
-      if (b.target.mesh && b.target.isEnabled) {
-        b.target.mesh.scaling = new BABYLON.Vector3(1.1, 1.1, 1.1)
-        scope.showHint = true
-        // var string = b.target.mesh.name
-        // scope.textHint = string.split('_')[1].replace('-', ' ')
-        scope.textHint = b.target.mesh.userData.textHint
+    buttonElement.onPointerEnterObservable.add(function (a, b) {
+      if (b.target.userData && !scope.testMode) {
+        b.target.userData.meshPlane.scaling = new BABYLON.Vector3(1.5, 1.5, 1.5)
+        scope.showHint = !scope.showHint
+        scope.textHint = b.target.userData.textHint
+        setHintPosition(b.target.userData.meshPlane)
       }
     })
-    pushButton.onPointerOutObservable.add(function (a, b) {
-      if (b.target.mesh && b.target.isEnabled) {
-        b.target.mesh.scaling = new BABYLON.Vector3(1.0, 1.0, 1.0)
-        scope.showHint = false
+    buttonElement.onPointerOutObservable.add(function (a, b) {
+      if (b.target.userData && !scope.testMode) {
+        b.target.userData.meshPlane.scaling = new BABYLON.Vector3(1.0, 1.0, 1.0)
+        scope.showHint = !scope.showHint
       }
     })
 
-    pushButton.onPointerUpObservable.add (function (a, b) {
+    buttonElement.onPointerClickObservable.add (function (a, b) {
       if (b.target.isEnabled) {
         if (scope.testStarted) {
-          if (!b.target.mesh.visibility) {
-            b.target.mesh.visibility = !b.target.mesh.visibility
+          if (!b.target.userData.meshPlane.visibility) {
+            b.target.userData.meshPlane.visibility = !b.target.userData.meshPlane.visibility
             scope.resultTest += 1
+            if (scope.resultTest >= parameters.interactiveElements.length && scope.testStarted) {
+              finishTest()
+            }
           }
         } else {
-          scope.showHint = false
           scope.showModal = true
-          scope.nameElement = b.target.mesh.name
-          console.log(b.target.mesh.userData.elemnentURL)
-          scope.iframe.src = b.target.mesh.userData.elemnentURL
+          // scope.showHint = false
+          scope.nameElement = b.target.name
+          scope.iframe.src = b.target.userData.elemnentURL
         }
       }
     })
   }
 
+  var finishTest = function () {
+    scope.showHint = false
+    scope.attempts = parameters.interactiveElements.length * 2
+    scope.testStarted = false
+    scope.testEnded = !scope.testStarted
+    scope.sendResult()
+  }
+
   var flag = false
-  canvas.addEventListener('pointerdown', function () {
+  window.addEventListener('pointerdown', function () {
     flag = true
   }, false)
-  canvas.addEventListener('pointermove', function () {
+  window.addEventListener('pointermove', function () {
     flag = false
   }, false)
-  canvas.addEventListener('pointerup', function (e) {
+  window.addEventListener('pointerup', function (e) {
     if (flag) {
       if (scope.testStarted && scene.name === scope.currentSceneName) {
         scope.attempts -= 1
+        if (scope.attempts <= 0 && scope.testStarted) {
+          finishTest()
+        }
       }
     }
   }, false)
@@ -208,8 +197,8 @@ export default function CreateCustomScene (parameters, scope, engine, canvas) {
     if (scene.isTransitionSceneOff) {
       if (fadeLevel <= 0) {
         scene.isTransitionSceneOff = false
+        scope.showLoader = true
         scope.currentSceneName = scope.tempSceneName
-        console.log(scope.currentSceneName)
         camera._restoreStateValues()
         camera.detachControl(canvas)
         scene.userData.buttons.map(v => {
@@ -223,35 +212,13 @@ export default function CreateCustomScene (parameters, scope, engine, canvas) {
       if (fadeLevel >= 1) {
         scene.isTransitionSceneOn = false
         fadeLevel = 1
+        var mainTexture = new BABYLON.CubeTexture('textures/skybox/' + scene.name + '/', scene, null, null, null, function () {
+          scope.showLoader = false
+          scene.userData.skybox.material.reflectionTexture = mainTexture
+          scene.userData.skybox.material.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE
+        })
       } else {
         fadeLevel += 0.05
-      }
-    } else if (scope.testMode && !scope.testStarted) {
-      scene.meshes.map(v => {
-        if (v.name.search(/interactiveElements\w*/) !== -1) {
-          // console.log(v.name)
-          v.visibility = false
-        }
-      })
-      scope.testStarted = true
-    } else {
-      var count = 0
-      scene.meshes.map(v => {
-        if (v.name.search(/interactiveElements\w*/) !== -1) {
-          if (v.visibility) {
-            count++
-          }
-        }
-      })
-      if (
-        (count >= parameters.interactiveElements.length ||
-        scope.attempts <= 0) &&
-        scope.testStarted
-      ) {
-        scope.attempts = parameters.interactiveElements.length * 2
-        scope.sendResult()
-        scope.testStarted = false
-        scope.testEnded = !scope.testStarted
       }
     }
   })
@@ -268,5 +235,6 @@ export default function CreateCustomScene (parameters, scope, engine, canvas) {
   //   }
   // }
   // canvas.addEventListener('pointerdown', onPointerDown, false)
+
   return scene
 }

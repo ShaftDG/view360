@@ -1,6 +1,6 @@
 <template>
   <transition name="modal">
-    <div class="modal-mask" @click="callback">
+    <div class="modal-mask">  <!--@click="callback"-->
       <div class="modal-wrapper">
         <div class="modal-container"
              :class="type">
@@ -19,9 +19,6 @@
           <div class="modal-footer">
             <slot name="footer">
               <!--default footer-->
-              <!--<button class="modal-default-button" @click="$emit('close')">-->
-                <!--OK-->
-              <!--</button>-->
             </slot>
           </div>
         </div>
@@ -75,12 +72,12 @@ export default {
   }
 
   .modal-container-congratulations {
-    width: 250px;
-    height: 100px;
+    width: 280px;
+    height: auto;
     margin: 0px auto;
     padding: 10px 15px;
-    background-color: rgba(0, 0, 0, .25);
-    border-radius: 2px;
+    background-color: rgba(0, 0, 0, .6);
+    border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
     transition: all .3s ease;
     font-size: 16px;
@@ -90,22 +87,24 @@ export default {
 
   .modal-container-empty {
     width: 250px;
-    height: 145px;
+    height: auto;
     background-color: rgba(0, 0, 0, 0);
     box-shadow: 0 0 0 rgba(0, 0, 0, 0);
   }
 
   .modal-header{
-    height: 0%;
-    margin-top: 5px;
-    color: #42b983;
+    position: relative;
+    height: 0;
+    z-index: 2;
   }
+
   .modal-footer{
     height: 0%;
     margin-top: 10px;
     color: #42b983;
   }
   .modal-body {
+    position: relative;
     height: 99%;
     margin: 0;
     text-align: center;

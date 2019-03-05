@@ -10,7 +10,7 @@
   .containerLoader {
     width: 100%;
     height: 100%;
-    backgroundColor: white;
+    background-color: black;
   }
   .loader {
     position: absolute;
@@ -20,7 +20,7 @@
     width: 150px;
     height: 150px;
     margin: -75px 0 0 -75px;
-    border: 16px solid #ffffff;
+    border: 16px solid #000000;
     border-radius: 50%;
     border-top: 16px solid #00495b;
     border-left: 16px solid #00495b;
@@ -49,7 +49,7 @@
     width: 180px;
     height: 180px;
     margin: -90px 0 0 -90px;
-    border: 16px solid #ffffff;
+    border: 16px solid #000000;
     border-radius: 50%;
     border-top: 16px solid #0083a4;
     border-left: 16px solid #0083a4;
@@ -78,7 +78,7 @@
     width: 210px;
     height: 210px;
     margin: -105px 0 0 -105px;
-    border: 16px solid #ffff;
+    border: 16px solid #000000;
     border-radius: 50%;
     border-top: 16px solid #00b3db;
     border-right: 16px solid #00b3db;

@@ -15,17 +15,25 @@
     </div>
     <shaft-modal v-if="showModal"
                  :type="'modal-container'"
-                 @close="showModal = false">
+                 >
       <iframe id="modalIframe" slot="body" :src="iframe.src"
               width="100%" height="100%" frameborder="0" allowfullscreen>
       </iframe>
-    </shaft-modal>
-    <shaft-modal v-if="testEnded && testMode"
-                 :type="'modal-container-congratulations'"
-                 @close="onEndTest">
-      <div slot="body">
-        <h3>{{userName}}, ваш результат:</h3>
-        <h3>{{resultTest}} элементов из {{numElements}}</h3>
+      <div slot="header" class="close-icon">
+        <div class="icon icons--wood" >
+          <svg width="36" height="36" viewbox="0 0 100 100" @click="showModal = false">
+            <defs>
+              <filter id="f2" x="-15%" y="-15%" width="300%" height="300%">
+                <feOffset result="offOut" in="SourceGraphic" dx="10" dy="10" />
+                <feGaussianBlur result="blurOut" in="offOut" stdDeviation="5" />
+                <feBlend in="SourceGraphic" in2="blurOut" mode="normal" />
+              </filter>
+            </defs>
+            <path id="home" d="M40 50 10 20 C 0 10, 10 0, 20 10 L 50 40 80 10 C 90 0, 100 10, 90 20 L 60 50 90 80 C 100 90, 90 100, 80 90 L 50 60 20 90 C 10 100, 0 90, 10 80 L 40 50z"
+                  transform="scale(.3)" filter="url(#f2)"/>
+          </svg>
+        </div>
+
       </div>
     </shaft-modal>
     <shaft-modal v-if="showUserModal"
@@ -37,17 +45,38 @@
             <input class="" type="text" id="dynamic-label-input" v-model="userName" placeholder="Имя тестируемого" required>
             <label for="dynamic-label-input">Имя тестируемого</label>
           </div>
-          <button class="submit" type="submit" @click="addUser">Подтвердить</button>
+          <button class="submit" type="submit">Подтвердить</button>
         </form>
+      </div>
+    </shaft-modal>
+    <shaft-modal v-if="showCongratulationsModal"
+                 :type="'modal-container-congratulations'"
+                 >
+      <div slot="body">
+        <h3>{{userName}}, ваш результат:</h3>
+        <h3>{{resultTest}} элементов из {{numElements}}</h3>
+        <button class="submit" @click="onEndTest(false)">Закрыть</button>
+      </div>
+    </shaft-modal>
+    <shaft-modal v-if="sendError"
+                 :type="'modal-container-congratulations'"
+    >
+      <div slot="body">
+        <h3>Произошла ошибка.</h3>
+        <h3>Попробуйте позже.</h3>
+        <button class="submit" @click="onEndTest(false)">Закрыть</button>
       </div>
     </shaft-modal>
     <div class="test-progress" v-if="showMsg && !testEnded">
       <p>{{greeting}}</p>
       <p>{{numAttempts}}</p>
     </div>
+    <div class="loadViewMini" v-if="showLoader">
+      <shaft-load-view :progressPercent="progressPercent" :typeLoader="'mini'"/>
+    </div>
   </div>
-  <div v-else class="loadView">
-    <LoadView/>
+  <div v-else-if="showLoader" class="loadView">
+    <shaft-load-view :progressPercent="progressPercent" :typeLoader="'full'"/>
   </div>
 </template>
 
@@ -58,6 +87,7 @@ import LoadView from './views/LoadView.vue'
 import ShaftNavbar from './components/ShaftNavbar'
 import ShaftModal from './components/ShaftModal'
 import ShaftButton from './components/ShaftButton'
+import ShaftLoadView from './components/ShaftLoadView'
 import { Base64 } from 'js-base64'
 import axios from 'axios'
 
@@ -73,6 +103,8 @@ export default {
       testEnded: !this.testStarted,
       userName: '',
       showUserModal: false,
+      showCongratulationsModal: false,
+      sendError: false,
       numElements: 0,
       resultTest: 0,
       flagClick: false,
@@ -92,13 +124,20 @@ export default {
       tempSceneName: null,
       showModal: false,
       showHint: false,
+      positionHint: {
+        x: 0,
+        y: 0
+      },
       textHint: 'opening_scene',
       nameElement: '',
       iframe: {
         src: 'http://192.168.1.55:8080',
         style: null,
         wrapperStyle: null
-      }
+      },
+      progressPercent: 0,
+      showLoader: true,
+      typeLoader: 'full'
     }
   },
   computed: {
@@ -139,26 +178,39 @@ export default {
           correct_answer: this.resultTest + ' of ' + this.numElements
         })
         console.log(data)
+        var that = this
         axios
           .post('http://test5.truetech.by/api/statistic/save', data, {
             headers: { 'Content-Type': 'application/json; charset=UTF-8' }
           })
           .then(function (response) {
+            if (response.data.status !== 200) {
+              throw "404"
+            }
+            that.showCongratulationsModal = true
             console.log(response)
           })
           .catch(function (error) {
+            that.sendError = true
             console.log(error)
           })
+          .finally(function () {})
       }
-    },
-    onClickMouseGlobal: function (e) {
-
     },
     onMoveMouseGlobal: function (e) {
       var hint = this.$refs.hint
       if (hint) {
-        e = e.changedTouches ? e.changedTouches[0] : e
-        hint.style.transform = 'translate(' + e.clientX + 'px, ' + (e.clientY - 40) + 'px)'
+        // e = e.changedTouches ? e.changedTouches[0] : e
+        // hint.style.transform = 'translate(' + e.clientX + 'px, ' + (e.clientY - 40) + 'px)'
+        hint.style.transform = 'translate(' + this.positionHint.x + 'px, ' + (this.positionHint.y - 40) + 'px)'
+      }
+    },
+    onTouchMoveGlobal: function (e) {
+      var hint = this.$refs.hint
+      if (hint) {
+        // e = e.changedTouches ? e.changedTouches[0] : e
+        // hint.style.transform = 'translate(' + e.clientX + 'px, ' + (e.clientY - 80) + 'px)'
+        hint.style.transform = 'translate(' + 50 + '%, ' + (window.innerWidth < window.innerHeight ? 3.5 : 1.75) + 'em)'
       }
     },
     onChangeLocation (value) {
@@ -171,6 +223,7 @@ export default {
       // console.log(222222222) // someValue
     },
     changeVisibleBABYLONScene (value) {
+      this.showLoader = false
       this.isVisibleBABYLONScene = value
     },
     changeVisibleVUEView (value) {
@@ -181,6 +234,7 @@ export default {
     },
     onStartTest (value) {
       if (!this.testStarted) {
+        this.testStarted = true
         this.testMode = value
         this.testEnded = !value
         this.numElements = 0
@@ -188,6 +242,7 @@ export default {
           if (v.name.search(/interactiveElements\w*/) !== -1) {
             if (v.visibility) {
               this.numElements += 1
+              v.visibility = false
             }
           }
         })
@@ -196,6 +251,8 @@ export default {
       }
     },
     onEndTest (value) {
+      this.showCongratulationsModal = false
+      this.sendError = false
       if (this.testMode) {
         this.userName = ''
         this.testMode = value
@@ -213,18 +270,18 @@ export default {
     }
   },
   components: {
-    LoadView,
     ShaftNavbar,
     ShaftModal,
-    ShaftButton
+    ShaftButton,
+    ShaftLoadView
   },
   created: function () {
     window.addEventListener('mousemove', this.onMoveMouseGlobal)
-    window.addEventListener('click', this.onClickMouseGlobal)
+    window.addEventListener('touchmove', this.onTouchMoveGlobal)
   },
   destroyed: function () {
     window.removeEventListener('mousemove', this.onMoveMouseGlobal)
-    window.removeEventListener('click',this.onClickMouseGlobal)
+    window.removeEventListener('touchmove', this.onTouchMoveGlobal)
   },
   mounted () {
     this.hint = this.$refs.hint
@@ -258,7 +315,6 @@ export default {
           cameraPosition: new BABYLON.Vector3(0, 7, 20),
           cameraTarget: new BABYLON.Vector3(0, 0, 0),
           fadeLevel: 0,
-          cubeMap: 'outside_area',
           exits: [
             {
               nameExitRoom: 'hall',
@@ -292,7 +348,6 @@ export default {
           cameraPosition: new BABYLON.Vector3(20, 7, 0),
           cameraTarget: new BABYLON.Vector3(0, 0, 0),
           fadeLevel: 0,
-          cubeMap: 'living_room',
           exits: [
             {
               nameExitRoom: 'kitchen',
@@ -403,7 +458,6 @@ export default {
           cameraPosition: new BABYLON.Vector3(-200, 100, 100),
           cameraTarget: new BABYLON.Vector3(0, 0, 0),
           fadeLevel: 0,
-          cubeMap: 'kitchen',
           exits: [
             {
               nameExitRoom: 'hall',
@@ -527,7 +581,6 @@ export default {
           cameraPosition: new BABYLON.Vector3(-20, 7, 0),
           cameraTarget: new BABYLON.Vector3(0, 0, 0),
           fadeLevel: 0,
-          cubeMap: 'child_room',
           exits: [
             {
               nameExitRoom: 'hall',
@@ -601,7 +654,7 @@ export default {
               url: 'modal/childroom/index9.html'
             },
             {
-              nameElement: '10',
+              nameElement: '10green',
               textHint: 'увлажнитель? - не знаю, как показать низкую влажность. Это уже как решение',
               positionElement: new BABYLON.Vector3(748, -89, 657),
               rotationElement: new BABYLON.Vector3(0, 0, 0),
@@ -664,14 +717,14 @@ export default {
               url: 'modal/childroom/index18.html'
             },
             {
-              nameElement: '19',
+              nameElement: '19green',
               textHint: 'Радионяня: это тоже уже как решение контроля за состоянием ребенка',
               positionElement: new BABYLON.Vector3(-141, -467, -871),
               rotationElement: new BABYLON.Vector3(0, 0, 0),
               url: 'modal/childroom/index19.html'
             },
             {
-              nameElement: '20',
+              nameElement: '20green',
               textHint: 'Ночник: это тоже уже как решение контроля за состоянием ребенка',
               positionElement: new BABYLON.Vector3(814, -63, -574),
               rotationElement: new BABYLON.Vector3(0, 0, 0),
@@ -685,7 +738,7 @@ export default {
               url: 'modal/childroom/index21.html'
             },
             {
-              nameElement: '22',
+              nameElement: '22green',
               textHint: 'Кормление (бутылочка с водой или соком, не со смесью)',
               positionElement: new BABYLON.Vector3(757, -315, 570),
               rotationElement: new BABYLON.Vector3(0, 0, 0),
@@ -722,7 +775,6 @@ export default {
           cameraPosition: new BABYLON.Vector3(-20, 7, 0),
           cameraTarget: new BABYLON.Vector3(0, 0, 0),
           fadeLevel: 0,
-          cubeMap: 'bathroom',
           exits: [
             {
               nameExitRoom: 'hall',
@@ -868,7 +920,6 @@ export default {
           cameraPosition: new BABYLON.Vector3(-20, 7, 0),
           cameraTarget: new BABYLON.Vector3(0, 0, 0),
           fadeLevel: 1,
-          cubeMap: 'hall',
           exits: [
             {
               nameExitRoom: 'kitchen',
@@ -1003,16 +1054,128 @@ export default {
           cameraPosition: new BABYLON.Vector3(-20, 7, 0),
           cameraTarget: new BABYLON.Vector3(0, 0, 0),
           fadeLevel: 0,
-          cubeMap: 'bedroom',
           exits: [
             {
               nameExitRoom: 'hall',
               textHint: 'Коридор',
-              positionExitRoom: new BABYLON.Vector3(0, -11, -940),
+              positionExitRoom: new BABYLON.Vector3(-710, 30, -701),
               rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
             }
           ],
-          interactiveElements: []
+          interactiveElements: [
+            {
+              nameElement: '1',
+              textHint: 'Углы и острая кромка мебели',
+              positionElement: new BABYLON.Vector3(-716, -459, -524),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/bedroom/index1.html'
+            },
+            {
+              nameElement: '2',
+              textHint: 'Розетки',
+              positionElement: new BABYLON.Vector3(892, -120, 434),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/bedroom/index2.html'
+            },
+            {
+              nameElement: '3',
+              textHint: 'Провода, удлинитель',
+              positionElement: new BABYLON.Vector3(853, -287, -435),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/bedroom/index3.html'
+            },
+            // {
+            //   nameElement: '4',
+            //   textHint: 'Мелкие предметы',
+            //   positionElement: new BABYLON.Vector3(, , ),
+            //   rotationElement: new BABYLON.Vector3(0, 0, 0),
+            //   url: 'http://192.168.1.55:8080'
+            // },
+            {
+              nameElement: '5',
+              textHint: 'Комод, шкаф',
+              positionElement: new BABYLON.Vector3(-452, -284, 844),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/bedroom/index5.html'
+            },
+            {
+              nameElement: '6',
+              textHint: 'Окна',
+              positionElement: new BABYLON.Vector3(297, 46, 952),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/bedroom/index6.html'
+            },
+            {
+              nameElement: '7',
+              textHint: 'Двери',
+              positionElement: new BABYLON.Vector3(-690, -225, -685),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/bedroom/index7.html'
+            },
+            {
+              nameElement: '8',
+              textHint: 'Телевизор',
+              positionElement: new BABYLON.Vector3(-966, 22, 250),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/bedroom/index8.html'
+            },
+            {
+              nameElement: '9',
+              textHint: 'Шторы, портьеры, жалюзи',
+              positionElement: new BABYLON.Vector3(-203, -43, 976),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/bedroom/index9.html'
+            },
+            {
+              nameElement: '10',
+              textHint: 'Шкафчики, шуфляды, ящики',
+              positionElement: new BABYLON.Vector3(-795, -583, 160),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/bedroom/index10.html'
+            },
+            {
+              nameElement: '11',
+              textHint: 'Шкаф-купе с зеркалом',
+              positionElement: new BABYLON.Vector3(311, 54, -947),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/bedroom/index11.html'
+            },
+            {
+              nameElement: '12',
+              textHint: 'Кровать родителей',
+              positionElement: new BABYLON.Vector3(947, -279, 156),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/bedroom/index12.html'
+            },
+            {
+              nameElement: '13',
+              textHint: 'Приставная кровать ребенка',
+              positionElement: new BABYLON.Vector3(682, -249, 685),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/bedroom/index13.html'
+            },
+            {
+              nameElement: '14',
+              textHint: 'Маленький коврик (ребенок может на нем поскользнуться)',
+              positionElement: new BABYLON.Vector3(-135, -611, 779),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/bedroom/index14.html'
+            },
+            {
+              nameElement: '15',
+              textHint: 'Лекарства на прикроватной тумбочке ',
+              positionElement: new BABYLON.Vector3(942, -182, -280),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/bedroom/index.html'
+            },
+            {
+              nameElement: '16',
+              textHint: 'Комнатные растения',
+              positionElement: new BABYLON.Vector3(-55, -400, -913),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/bedroom/index.html'
+            }
+          ]
         }
         var scene7 = new CreateCustomScene(parameters7, scope, engine, canvas)
         scenesMap = [ ...scenesMap, scene7 ]
@@ -1032,11 +1195,34 @@ export default {
         }
         scope.currentScene.activeCamera.attachControl(canvas, false)
 
+        var assetsManager = new BABYLON.AssetsManager(scope.currentScene)
+        var textureTask = assetsManager.addCubeTextureTask('image task', 'textures/skybox/preview/' + scope.currentSceneName + '/')
+        textureTask.onSuccess = function (task) {
+          scope.currentScene.userData.skybox.material.reflectionTexture = task.texture
+          scope.currentScene.userData.skybox.material.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE
+        }
+
+        assetsManager.onProgress = function (remainingCount, totalCount) {
+          scope.progressPercent = 50 - (100 / totalCount) * remainingCount
+        }
+
+        assetsManager.onFinish = function () {
+          scope.progressPercent = 100
+        }
+        assetsManager.load()
+
         var changeVisibleBABYLONScene = this.changeVisibleBABYLONScene
 
         scope.currentScene.executeWhenReady(function () {
           changeVisibleBABYLONScene(true)
+          scope.showLoader = true
+          var mainTexture = new BABYLON.CubeTexture('textures/skybox/' + scope.currentSceneName + '/', scope.currentScene, null, null, null, function () {
+            scope.currentScene.userData.skybox.material.reflectionTexture = mainTexture
+            scope.currentScene.userData.skybox.material.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE
+            scope.showLoader = false
+          })
         })
+
         engine.runRenderLoop(function () {
           if (scope.currentSceneName !== scope.currentScene.name) {
             engine.scenes.map(v => {
@@ -1072,6 +1258,11 @@ export default {
   height: 100%;
   backgroundColor: white;
 }
+.loadViewMini {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+}
 #app {
   position:absolute;
   top:0;
@@ -1089,7 +1280,7 @@ export default {
   --width: 100%;
 }
 .hint {
-  position: absolute;
+  position: fixed;
   width: var(--width);
   height: 10px;
   top: 0px;
@@ -1135,7 +1326,7 @@ form {
   max-width: 50rem;
   margin: 0 auto;
   padding: 1.5rem 2rem;
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: rgba(0, 0, 0, 0.6);
   border-radius: 8px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
@@ -1167,6 +1358,7 @@ label {
 }
 
 input{
+  width: 168px;
   height: 20px;
   padding: 5px 8px;
   color: #102029;
@@ -1249,6 +1441,35 @@ button.submit:active {
 #nav a {
   font-weight: bold;
   color: #759fcb
+}
+
+.close-icon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 32px;
+  height: 32px;
+}
+
+.icon {
+  display: inline-block;
+  position: relative;
+  top: 0;
+  width: 32px;
+  height: 32px;
+  stroke: rgba(22, 49, 67, 0.5);
+  stroke-width: 6;
+  transition: .2s;
+}
+
+.icons--wood {
+  fill: #b7fcff;
+}
+
+.icon:hover {
+  fill: #297e9c;
+  stroke: #163143;
+  stroke-width: 6;
 }
 
 </style>
