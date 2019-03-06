@@ -79,23 +79,19 @@ export default function CreateCustomScene (parameters, scope, engine, canvas) {
       textHint: parameters.exits[i].textHint
     }
 
-    button.onPointerEnterObservable.add(function (a, b) {
-      if (b.target.userData) {
+    button.onPointerMoveObservable.add(function (a, b) {
+      if (b.target.userData && !scope.showHint) {
         b.target.userData.meshPlane.scaling = new BABYLON.Vector3(1.5, 1.5, 1.5)
         scope.showHint = true
-        // var stirng = b.target.userData.meshPlane.name
-        // scope.textHint = stirng.split('_')[1].replace('-', ' ')
         scope.textHint = b.target.userData.textHint
         setHintPosition(b.target.userData.meshPlane)
       }
-      // b.target.userData.animation.stop()
     })
     button.onPointerOutObservable.add(function (a, b) {
       if (b.target.userData) {
         b.target.userData.meshPlane.scaling = new BABYLON.Vector3(1.0, 1.0, 1.0)
         scope.showHint = false
       }
-      // b.target.userData.animation.res()
     })
 
     button.onPointerClickObservable.add (function (a, b) {
@@ -132,18 +128,19 @@ export default function CreateCustomScene (parameters, scope, engine, canvas) {
       textHint: parameters.interactiveElements[j].textHint
     }
 
-    buttonElement.onPointerEnterObservable.add(function (a, b) {
-      if (b.target.userData && !scope.testMode) {
+    buttonElement.onPointerMoveObservable.add(function (a, b) {
+      if (b.target.userData && !scope.testMode && !scope.showHint) {
         b.target.userData.meshPlane.scaling = new BABYLON.Vector3(1.5, 1.5, 1.5)
-        scope.showHint = !scope.showHint
+        scope.showHint = true
         scope.textHint = b.target.userData.textHint
         setHintPosition(b.target.userData.meshPlane)
       }
     })
+
     buttonElement.onPointerOutObservable.add(function (a, b) {
       if (b.target.userData && !scope.testMode) {
         b.target.userData.meshPlane.scaling = new BABYLON.Vector3(1.0, 1.0, 1.0)
-        scope.showHint = !scope.showHint
+        scope.showHint = false
       }
     })
 
@@ -159,7 +156,8 @@ export default function CreateCustomScene (parameters, scope, engine, canvas) {
           }
         } else {
           scope.showModal = true
-          // scope.showHint = false
+          scope.showHint = false
+          b.target.userData.meshPlane.scaling = new BABYLON.Vector3(1.0, 1.0, 1.0)
           scope.nameElement = b.target.name
           scope.iframe.src = b.target.userData.elemnentURL
         }

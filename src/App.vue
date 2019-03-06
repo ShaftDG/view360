@@ -21,7 +21,7 @@
       </iframe>
       <div slot="header" class="close-icon">
         <div class="icon icons--wood" >
-          <svg width="36" height="36" viewbox="0 0 100 100" @click="showModal = false">
+          <svg width="29" height="29" viewbox="0 0 100 100" @click="showModal = false; showHint = false">
             <defs>
               <filter id="f2" x="-15%" y="-15%" width="300%" height="300%">
                 <feOffset result="offOut" in="SourceGraphic" dx="10" dy="10" />
@@ -30,7 +30,7 @@
               </filter>
             </defs>
             <path id="home" d="M40 50 10 20 C 0 10, 10 0, 20 10 L 50 40 80 10 C 90 0, 100 10, 90 20 L 60 50 90 80 C 100 90, 90 100, 80 90 L 50 60 20 90 C 10 100, 0 90, 10 80 L 40 50z"
-                  transform="scale(.3)" filter="url(#f2)"/>
+                  transform="scale(.25)" filter="url(#f2)"/>
           </svg>
         </div>
 
@@ -54,7 +54,7 @@
                  >
       <div slot="body">
         <h3>{{userName}}, ваш результат:</h3>
-        <h3>{{resultTest}} элементов из {{numElements}}</h3>
+        <h3>{{resultTest}} из {{numElements}}</h3>
         <button class="submit" @click="onEndTest(false)">Закрыть</button>
       </div>
     </shaft-modal>
@@ -1281,6 +1281,7 @@ export default {
 }
 .hint {
   position: fixed;
+  pointer-events: none;
   width: var(--width);
   height: 10px;
   top: 0px;
@@ -1307,6 +1308,7 @@ p {
 
 .test-progress {
   position: fixed;
+  pointer-events: none;
   width: 100%;
   bottom: 20px;
   left: 0;
