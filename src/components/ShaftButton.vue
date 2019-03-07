@@ -24,8 +24,9 @@ export default {
 </script>
 
 <style scoped>
+  /*@import '../../public/css/fonts.css';*/
   button {
-    width: 40%;
+    width: 65%;
     min-width: 130px;
     margin-top: 10px;
     margin-right: 10px;
@@ -50,6 +51,7 @@ export default {
     -ms-box-shadow: 0 1px 0 0 #80c7d5 inset;
     -o-box-shadow: 0 1px 0 0 #80c7d5 inset;
     color: white;
+    font-size: 14pt;
     font-weight: bold;
     padding: 6px 10px;
     text-align: center;
@@ -58,6 +60,13 @@ export default {
      cursor: not-allowed;
    }
   }
+
+  @media screen and (max-width: 320px) {
+    button {
+      font-size: 12px;
+    }
+  }
+
   button:hover {
     opacity:.85;
     cursor: pointer;

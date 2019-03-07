@@ -470,6 +470,7 @@ export default {
   .container-vertical {
     width: 150px;
     height: 350px;
+    top: 10px;
     position: absolute;
     right: -200px;
     padding: 2px;
@@ -486,6 +487,7 @@ export default {
     width: 30px;
     height: 50px;
     position: absolute;
+    top: 10px;
     right: 0;
     padding: 0 4px 0 0;
     margin: 10px 10px 10px 10px;
@@ -512,7 +514,6 @@ export default {
     /*background-color: aqua;*/
     padding: 10px 0 0 0;
     font-size: 24px;
-    font-family: '微软雅黑',arail;
     cursor: pointer;
     text-shadow: 0 0 10px #101921, 0 0 15px #0c2638;
     text-align: center;
@@ -526,7 +527,6 @@ export default {
     height: 50px;
     width: 100%;
     font-size: 24px;
-    font-family: '微软雅黑',arail;
     cursor: pointer;
     text-shadow: 0 0 10px #101921, 0 0 15px #0c2638;
     text-align: right;

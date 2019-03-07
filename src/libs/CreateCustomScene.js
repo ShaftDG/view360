@@ -1,4 +1,5 @@
-import BABYLON, {Scene, Vector3} from 'babylonjs'
+import BABYLON from 'babylonjs'
+import 'babylonjs-loaders'
 import AnimationArrow from './AnimationArrow'
 
 export default function CreateCustomScene (parameters, scope, engine, canvas) {
@@ -80,7 +81,7 @@ export default function CreateCustomScene (parameters, scope, engine, canvas) {
     }
 
     button.onPointerMoveObservable.add(function (a, b) {
-      if (b.target.userData && !scope.showHint) {
+      if (b.target.userData && !scope.testMode && !scope.showHint) {
         b.target.userData.meshPlane.scaling = new BABYLON.Vector3(1.5, 1.5, 1.5)
         scope.showHint = true
         scope.textHint = b.target.userData.textHint
@@ -88,17 +89,19 @@ export default function CreateCustomScene (parameters, scope, engine, canvas) {
       }
     })
     button.onPointerOutObservable.add(function (a, b) {
-      if (b.target.userData) {
+      if (b.target.userData && !scope.testMode) {
         b.target.userData.meshPlane.scaling = new BABYLON.Vector3(1.0, 1.0, 1.0)
         scope.showHint = false
       }
     })
 
     button.onPointerClickObservable.add (function (a, b) {
-      scope.showHint = false
-      scene.isTransitionSceneOff = true
-      scope.tempSceneName = b.target.name.split('_')[1]
-      scope.onEndTest(false)
+      if (b.target.userData && b.target.userData.meshPlane.visibility) {
+        scope.showHint = false
+        scene.isTransitionSceneOff = true
+        scope.tempSceneName = b.target.name.split('_')[1]
+        scope.onEndTest(false)
+      }
     })
   }
 
@@ -147,7 +150,7 @@ export default function CreateCustomScene (parameters, scope, engine, canvas) {
     buttonElement.onPointerClickObservable.add (function (a, b) {
       if (b.target.isEnabled) {
         if (scope.testStarted) {
-          if (!b.target.userData.meshPlane.visibility) {
+          if (b.target.userData && !b.target.userData.meshPlane.visibility) {
             b.target.userData.meshPlane.visibility = !b.target.userData.meshPlane.visibility
             scope.resultTest += 1
             if (scope.resultTest >= parameters.interactiveElements.length && scope.testStarted) {

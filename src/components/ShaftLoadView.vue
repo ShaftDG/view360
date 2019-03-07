@@ -3,7 +3,7 @@
       <div id="MyLoadingScreen" class="loader"></div>
       <div id="MyLoadingScreenInner" class="loaderInner"></div>
       <div id="MyLoadingScreenInner1" class="loaderInner1"></div>
-      <div class="progress">{{progressPercent}} %</div>
+      <div class="progress">{{progressPercent}}</div>
     </div>
 
     <div id="MyLoadingScreenContainerMini" class="containerLoaderMini" v-else-if="typeLoader === 'mini'">
@@ -27,7 +27,6 @@ export default {
     text-align: center;
     color: #42c0ff;
     font-size: 24pt;
-    font-family: Gill Sans Extrabold, fantasy;
   }
 
   .containerLoader {

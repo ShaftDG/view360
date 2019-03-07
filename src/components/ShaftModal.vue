@@ -68,7 +68,6 @@ export default {
     border-radius: 2px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
     transition: all .3s ease;
-    font-family: Helvetica, Arial, sans-serif;
   }
 
   .modal-container-congratulations {
@@ -82,11 +81,11 @@ export default {
     transition: all .3s ease;
     font-size: 16px;
     color: #ade6ff;
-    font-family: Helvetica, Arial, sans-serif;
   }
 
   .modal-container-empty {
-    width: 250px;
+    max-width: 300px;
+    width: 300px;
     height: auto;
     background-color: rgba(0, 0, 0, 0);
     box-shadow: 0 0 0 rgba(0, 0, 0, 0);

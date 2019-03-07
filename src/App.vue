@@ -7,8 +7,8 @@
                  >
     </shaft-navbar>
     <div class="button-test-container">
-      <shaft-button @click="onDefinitionUser(true)">Начать тест</shaft-button>
-      <shaft-button @click="onEndTest(false)">Закончить тест</shaft-button>
+      <shaft-button @click="onDefinitionUser(true)" v-if="!testMode">Начать тест</shaft-button>
+      <shaft-button @click="onEndTest(false)" v-if="testMode">Закончить тест</shaft-button>
     </div>
     <div class="hint" ref="hint" v-if="showHint">
       {{textHint}}
@@ -68,8 +68,7 @@
       </div>
     </shaft-modal>
     <div class="test-progress" v-if="showMsg && !testEnded">
-      <p>{{greeting}}</p>
-      <p>{{numAttempts}}</p>
+      <p><span style="display: inline-block">{{greeting}}. </span><span style="display: inline-block">{{numAttempts}}.</span></p>
     </div>
     <div class="loadViewMini" v-if="showLoader">
       <shaft-load-view :progressPercent="progressPercent" :typeLoader="'mini'"/>
@@ -145,7 +144,7 @@ export default {
       return 'Количество попыток: ' + this.attempts
     },
     greeting: function () {
-      return 'Найдено ' + this.resultTest + ' элементов из ' + this.numElements
+      return 'Найдено ' + this.resultTest + ' из ' + this.numElements
     },
     showMsg: function () {
       return this.testMode
@@ -184,9 +183,6 @@ export default {
             headers: { 'Content-Type': 'application/json; charset=UTF-8' }
           })
           .then(function (response) {
-            if (response.data.status !== 200) {
-              throw "404"
-            }
             that.showCongratulationsModal = true
             console.log(response)
           })
@@ -210,7 +206,7 @@ export default {
       if (hint) {
         // e = e.changedTouches ? e.changedTouches[0] : e
         // hint.style.transform = 'translate(' + e.clientX + 'px, ' + (e.clientY - 80) + 'px)'
-        hint.style.transform = 'translate(' + 50 + '%, ' + (window.innerWidth < window.innerHeight ? 3.5 : 1.75) + 'em)'
+        hint.style.transform = 'translate(' + 50 + '%, ' + 3 + 'em)'
       }
     },
     onChangeLocation (value) {
@@ -245,6 +241,11 @@ export default {
               v.visibility = false
             }
           }
+          if (v.name.search(/exitRoom\w*/) !== -1) {
+            if (v.visibility) {
+              v.visibility = false
+            }
+          }
         })
         this.attempts = this.numElements * 2
         this.resultTest = 0
@@ -263,7 +264,7 @@ export default {
     },
     setVisibleElementsTest (value) {
       this.currentScene.meshes.map(v => {
-        if (v.name.search(/interactiveElements\w*/) !== -1) {
+        if (v.name.search(/interactiveElements\w*/) !== -1 || v.name.search(/exitRoom\w*/) !== -1) {
           v.visibility = value
         }
       })
@@ -1270,11 +1271,11 @@ export default {
   z-index:9999;
   /*background: rgba(0, 160, 160, 0.75);*/
   width:100%;
-  font-family: '微软雅黑',arail;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #94ccff
+  color: #94ccff;
+  font-family: Gobold;
 }
 :root {
   --width: 100%;
@@ -1301,21 +1302,47 @@ p {
   float:left;
   width: 75%;
   max-width: 320px;
-  top: 0;
-  left: 0;
+  top: 10px;
+  left: 10px;
   text-align: left;
 }
 
 .test-progress {
   position: fixed;
   pointer-events: none;
-  width: 100%;
-  bottom: 20px;
-  left: 0;
-  font-size: 16pt;
+  width: 67vw;
+  top: 70px;
+  left: 20px;
+  font-size: 2vw;
   text-shadow: 0 0 10px #530018, 0 0 15px #6a0008;
-  text-align: center;
+  text-align: left;
   color: #dfefff;
+}
+
+@media screen and (min-width: 320px) {
+  .test-progress {
+    font-size: calc(18px + 6 * ((100vw - 320px) / 680));
+    top: 65px;
+  }
+}
+@media screen and (max-width: 320px) {
+  .test-progress {
+    font-size: 12px;
+    top: 55px;
+  }
+}
+@media screen and (min-width: 1000px) {
+  .test-progress {
+    font-size: 26px;
+  }
+}
+
+@media screen and (max-width: 1640px) {
+  @media screen and (min-width: 1440px) {
+    .test-progress {
+      top: 80px;
+    }
+  }
 }
 
 .errors {
@@ -1325,7 +1352,7 @@ p {
 *:focus {outline: none;}
 
 form {
-  max-width: 50rem;
+  max-width: 300px;
   margin: 0 auto;
   padding: 1.5rem 2rem;
   background-color: rgba(0, 0, 0, 0.6);
@@ -1345,6 +1372,8 @@ form {
 button {
   width: 100%;
   margin-top: 10px;
+  font-size: 14pt;
+  font-family: Gobold;
 }
 
 label {
@@ -1353,20 +1382,24 @@ label {
   left: 0;
   font-size: 14px;
   opacity: 1;
-  transform: translateY(-7px);
+  transform: translateY(-12px);
   transition: all 0.2s ease-out;
   color: #d6f7ff;
   text-shadow: 0 0 10px #407496, 0 0 15px #5891cb;
+  font-size: 14pt;
+  font-family: Gobold;
 }
 
 input{
-  width: 168px;
-  height: 20px;
+  width: 218px;
+  height: 30px;
   padding: 5px 8px;
-  color: #102029;
+  color: #254961;
   border:1px solid #6eb6fe;
   box-shadow: 0px 0px 3px #32647f, 0 10px 15px #ffffff inset;
   border-radius:2px;
+  font-size: 14pt;
+  font-family: Gobold;
 }
 
 input:placeholder-shown + label {
@@ -1422,6 +1455,7 @@ button.submit {
   padding: 6px 20px;
   text-align: center;
   text-shadow: 0 0 10px #3da3c3;
+  font-family: Gobold;
 }
 button.submit:hover {
   opacity:.85;
