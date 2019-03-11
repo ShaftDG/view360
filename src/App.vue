@@ -80,9 +80,7 @@
 </template>
 
 <script>
-import BABYLON from 'babylonjs'
 import 'babylonjs-gui'
-import LoadView from './views/LoadView.vue'
 import ShaftNavbar from './components/ShaftNavbar'
 import ShaftModal from './components/ShaftModal'
 import ShaftButton from './components/ShaftButton'
@@ -136,7 +134,8 @@ export default {
       },
       progressPercent: 0,
       showLoader: true,
-      typeLoader: 'full'
+      typeLoader: 'full',
+      isMobile: null
     }
   },
   computed: {
@@ -162,6 +161,31 @@ export default {
     }
   },
   methods: {
+    detectedPlatform: function () {
+      return {
+        Android: function () {
+          return navigator.userAgent.match(/Android/i)
+        },
+        BlackBerry: function () {
+          return navigator.userAgent.match(/BlackBerry/i)
+        },
+        iOS: function () {
+          return navigator.userAgent.match(/iPhone|iPad|iPod/i)
+        },
+        Opera: function () {
+          return navigator.userAgent.match(/Opera Mini/i)
+        },
+        Windows: function () {
+          return navigator.userAgent.match(/IEMobile/i)
+        },
+        PC: function () {
+          return navigator.userAgent.match(/Windows/i)
+        },
+        any: function () {
+          return (this.detectedPlatform.Android() || this.detectedPlatform.BlackBerry() || this.detectedPlatform.iOS() || this.detectedPlatform.Opera() || this.detectedPlatform.Windows())
+        }
+      }
+    },
     addUser: function () {
       if (this.isValid) {
         this.showUserModal = false
@@ -279,6 +303,11 @@ export default {
   created: function () {
     window.addEventListener('mousemove', this.onMoveMouseGlobal)
     window.addEventListener('touchmove', this.onTouchMoveGlobal)
+    if (this.detectedPlatform().PC()) {
+      this.isMobile = false
+    } else {
+      this.isMobile = true
+    }
   },
   destroyed: function () {
     window.removeEventListener('mousemove', this.onMoveMouseGlobal)
@@ -320,24 +349,74 @@ export default {
             {
               nameExitRoom: 'hall',
               textHint: 'Коридор',
-              positionExitRoom: new BABYLON.Vector3(-5, -13, 940),
-              rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
+              positionExitRoom: new BABYLON.Vector3(-458, 26, -887),
+              rotationExitRoom: new BABYLON.Vector3(0, 0, -Math.PI / 1.95 ),
+              animation: new BABYLON.Vector3(-50, 0, 0)
             }
           ],
           interactiveElements: [
             {
-              nameElement: 'tv',
-              textHint: 'tv',
-              positionElement: new BABYLON.Vector3(-940, 0, 24),
+              nameElement: '1',
+              textHint: 'Автомашина с открытой дверью (видно автокресло внутри)',
+              positionElement: new BABYLON.Vector3(-292, -115, -948),
               rotationElement: new BABYLON.Vector3(0, 0, 0),
-              url: 'http://81.25.47.128/JewelSlot/'
+              url: 'modal/outsidearea/index1.html'
             },
             {
-              nameElement: 'bed',
-              textHint: 'bed',
-              positionElement: new BABYLON.Vector3(940, -20, 46),
+              nameElement: '2',
+              textHint: 'Песочница',
+              positionElement: new BABYLON.Vector3(307, -195, 930),
               rotationElement: new BABYLON.Vector3(0, 0, 0),
-              url: 'http://192.168.1.55:8080'
+              url: 'modal/outsidearea/index2.html'
+            },
+            {
+              nameElement: '3',
+              textHint: 'Бассейн',
+              positionElement: new BABYLON.Vector3(818, -320, 473),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/outsidearea/index3.html'
+            },
+            {
+              nameElement: '4',
+              textHint: 'Крыльцо с плиткой',
+              positionElement: new BABYLON.Vector3(-847, -507, 150),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/outsidearea/index4.html'
+            },
+            {
+              nameElement: '5',
+              textHint: 'Мангал (рядом жидкости для розжига)',
+              positionElement: new BABYLON.Vector3(-822, -129, -551),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/outsidearea/index5.html'
+            },
+            {
+              nameElement: '6',
+              textHint: 'Незакрытая калитка',
+              positionElement: new BABYLON.Vector3(988, -56, -127),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/outsidearea/index6.html'
+            },
+            {
+              nameElement: '7',
+              textHint: 'Батут',
+              positionElement: new BABYLON.Vector3(632, -320, -704),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/outsidearea/index7.html'
+            },
+            {
+              nameElement: '8',
+              textHint: 'Будка и миска с едой для собаки',
+              positionElement: new BABYLON.Vector3(38, -57, -996),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/outsidearea/index8.html'
+            },
+            {
+              nameElement: '8-1',
+              textHint: 'Будка и миска с едой для собаки',
+              positionElement: new BABYLON.Vector3(-553, -144, -818),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/outsidearea/index8.html'
             }
           ]
         }
@@ -354,7 +433,8 @@ export default {
               nameExitRoom: 'kitchen',
               textHint: 'Кухня',
               positionExitRoom: new BABYLON.Vector3(808, -431, 399),
-              rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
+              rotationExitRoom: new BABYLON.Vector3(0, 0, 0),
+              animation: new BABYLON.Vector3(0, 30, 0)
             }
           ],
           interactiveElements: [
@@ -464,13 +544,15 @@ export default {
               nameExitRoom: 'hall',
               textHint: 'Коридор',
               positionExitRoom: new BABYLON.Vector3(-685, -62, 724),
-              rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
+              rotationExitRoom: new BABYLON.Vector3(0, 0, 0),
+              animation: new BABYLON.Vector3(0, 30, 0)
             },
             {
               nameExitRoom: 'living-room',
               textHint: 'Гостиная',
               positionExitRoom: new BABYLON.Vector3(-970, -76, 223),
-              rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
+              rotationExitRoom: new BABYLON.Vector3(0, 0, 0),
+              animation: new BABYLON.Vector3(0, 30, 0)
             }
           ],
           interactiveElements: [
@@ -571,6 +653,13 @@ export default {
               positionElement: new BABYLON.Vector3(355, -99, 929),
               rotationElement: new BABYLON.Vector3(0, 0, 0),
               url: 'modal/kitchen/index14.html'
+            },
+            {
+              nameElement: '15green',
+              textHint: 'Кормление (бутылочка с водой или соком, не со смесью)',
+              positionElement: new BABYLON.Vector3(346, -366, -863),
+              rotationElement: new BABYLON.Vector3(0, 0, 0),
+              url: 'modal/kitchen/index15.html'
             }
           ]
         }
@@ -587,7 +676,8 @@ export default {
               nameExitRoom: 'hall',
               textHint: 'Коридор',
               positionExitRoom: new BABYLON.Vector3(-924, -288, 246),
-              rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
+              rotationExitRoom: new BABYLON.Vector3(0, 0, 0),
+              animation: new BABYLON.Vector3(0, 30, 0)
             }
           ],
           interactiveElements: [
@@ -738,13 +828,13 @@ export default {
               rotationElement: new BABYLON.Vector3(0, 0, 0),
               url: 'modal/childroom/index21.html'
             },
-            {
-              nameElement: '22green',
-              textHint: 'Кормление (бутылочка с водой или соком, не со смесью)',
-              positionElement: new BABYLON.Vector3(757, -315, 570),
-              rotationElement: new BABYLON.Vector3(0, 0, 0),
-              url: 'modal/childroom/index22.html'
-            },
+            // {
+            //   nameElement: '22green',
+            //   textHint: 'Кормление (бутылочка с водой или соком, не со смесью)',
+            //   positionElement: new BABYLON.Vector3(757, -315, 570),
+            //   rotationElement: new BABYLON.Vector3(0, 0, 0),
+            //   url: 'modal/childroom/index22.html'
+            // },
             {
               nameElement: '23',
               textHint: 'Точка на коврике на полу - скользкий, ребенок может поскользнуться',
@@ -781,7 +871,8 @@ export default {
               nameExitRoom: 'hall',
               textHint: 'Коридор',
               positionExitRoom: new BABYLON.Vector3(801, -204, 560),
-              rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
+              rotationExitRoom: new BABYLON.Vector3(0, 0, 0),
+              animation: new BABYLON.Vector3(0, 30, 0)
             }
           ],
           interactiveElements: [
@@ -926,31 +1017,36 @@ export default {
               nameExitRoom: 'kitchen',
               textHint: 'Кухня - гостиная',
               positionExitRoom: new BABYLON.Vector3(282, 13, -958),
-              rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
+              rotationExitRoom: new BABYLON.Vector3(0, 0, 0),
+              animation: new BABYLON.Vector3(0, 30, 0)
             },
             {
               nameExitRoom: 'bedroom',
               textHint: 'Спальня',
               positionExitRoom: new BABYLON.Vector3(757, 43, -649),
-              rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
+              rotationExitRoom: new BABYLON.Vector3(0, 0, 0),
+              animation: new BABYLON.Vector3(0, 30, 0)
             },
             {
               nameExitRoom: 'child-room',
               textHint: 'Детская',
               positionExitRoom: new BABYLON.Vector3(-567, 293, -768),
-              rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
+              rotationExitRoom: new BABYLON.Vector3(0, 0, 0),
+              animation: new BABYLON.Vector3(0, 30, 0)
             },
             {
               nameExitRoom: 'bathroom',
               textHint: 'Ванная',
               positionExitRoom: new BABYLON.Vector3(-891, 31, 451),
-              rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
+              rotationExitRoom: new BABYLON.Vector3(0, 0, 0),
+              animation: new BABYLON.Vector3(0, 30, 0)
             },
             {
               nameExitRoom: 'outside-area',
               textHint: 'Двор',
               positionExitRoom: new BABYLON.Vector3(301, 49, 950),
-              rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
+              rotationExitRoom: new BABYLON.Vector3(0, 0, 0),
+              animation: new BABYLON.Vector3(0, 30, 0)
             },
           ],
           interactiveElements: [
@@ -1060,7 +1156,8 @@ export default {
               nameExitRoom: 'hall',
               textHint: 'Коридор',
               positionExitRoom: new BABYLON.Vector3(-710, 30, -701),
-              rotationExitRoom: new BABYLON.Vector3(0, 0, 0)
+              rotationExitRoom: new BABYLON.Vector3(0, 0, 0),
+              animation: new BABYLON.Vector3(0, 30, 0)
             }
           ],
           interactiveElements: [
@@ -1196,32 +1293,50 @@ export default {
         }
         scope.currentScene.activeCamera.attachControl(canvas, false)
 
-        var assetsManager = new BABYLON.AssetsManager(scope.currentScene)
-        var textureTask = assetsManager.addCubeTextureTask('image task', 'textures/skybox/preview/' + scope.currentSceneName + '/')
-        textureTask.onSuccess = function (task) {
-          scope.currentScene.userData.skybox.material.reflectionTexture = task.texture
-          scope.currentScene.userData.skybox.material.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE
-        }
-
-        assetsManager.onProgress = function (remainingCount, totalCount) {
-          scope.progressPercent = 50 - (100 / totalCount) * remainingCount
-        }
-
-        assetsManager.onFinish = function () {
-          scope.progressPercent = 100
-        }
-        assetsManager.load()
+        // var assetsManager = new BABYLON.AssetsManager(scope.currentScene)
+        // var textureTask = assetsManager.addCubeTextureTask('image task', 'textures/skybox/preview/' + scope.currentSceneName + '/')
+        // textureTask.onSuccess = function (task) {
+        //   scope.currentScene.userData.skybox.material.reflectionTexture = task.texture
+        //   scope.currentScene.userData.skybox.material.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE
+        // }
+        //
+        // assetsManager.onProgress = function (remainingCount, totalCount) {
+        //   scope.progressPercent = 50 - (100 / totalCount) * remainingCount
+        // }
+        //
+        // assetsManager.onFinish = function () {
+        //   scope.progressPercent = 100
+        // }
+        // assetsManager.load()
 
         var changeVisibleBABYLONScene = this.changeVisibleBABYLONScene
+
+        var baseUrlTextures = 'textures/skybox/'
+        if (scope.isMobile) {
+          baseUrlTextures = 'textures/skybox/mobile/'
+        }
 
         scope.currentScene.executeWhenReady(function () {
           changeVisibleBABYLONScene(true)
           scope.showLoader = true
-          var mainTexture = new BABYLON.CubeTexture('textures/skybox/' + scope.currentSceneName + '/', scope.currentScene, null, null, null, function () {
+          var mainTexture = new BABYLON.CubeTexture(baseUrlTextures + scope.currentSceneName + '/', scope.currentScene, null, null, null, function () {
             scope.currentScene.userData.skybox.material.reflectionTexture = mainTexture
             scope.currentScene.userData.skybox.material.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE
             scope.showLoader = false
           })
+        })
+
+        var sceneChecked = false
+        scope.currentScene.registerBeforeRender(function () {
+          if (scope.currentScene) {
+            if (!sceneChecked) {
+              var remaining = scope.currentScene.getWaitingItemsCount()
+              scope.progressPercent = Math.floor((100 / 6) * (6 - remaining))
+              if (remaining === 0) {
+                sceneChecked = true
+              }
+            }
+          }
         })
 
         engine.runRenderLoop(function () {

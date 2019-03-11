@@ -1,15 +1,17 @@
-import BABYLON from 'babylonjs'
-import 'babylonjs-loaders'
 import AnimationArrow from './AnimationArrow'
 
 export default function CreateCustomScene (parameters, scope, engine, canvas) {
+  var baseUrlTextures = 'textures/skybox/'
+  if (scope.isMobile) {
+    baseUrlTextures = 'textures/skybox/mobile/'
+  }
   var scene = new BABYLON.Scene(engine)
   scene.name = parameters.nameScene
   scene.clearColor = new BABYLON.Color4(0.3, 0.3, 0.4, 0.75)
-  var skybox = BABYLON.MeshBuilder.CreateSphere('skyBox', { diameter: 2000 }, scene)
+  var skybox = BABYLON.MeshBuilder.CreateSphere('skyBox', { diameter: 2000, sideOrientation: BABYLON.Mesh.BACKSIDE }, scene)
   skybox.isPickable = false
   var skyboxMaterial = new BABYLON.StandardMaterial('skyBox', scene)
-  skyboxMaterial.backFaceCulling = false
+  // skyboxMaterial.backFaceCulling = false
   skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture('textures/skybox/preview/' + parameters.nameScene + '/', scene)
   skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE
   skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0)
@@ -18,6 +20,7 @@ export default function CreateCustomScene (parameters, scope, engine, canvas) {
   skybox.material = skyboxMaterial
 
   var camera = new BABYLON.ArcRotateCamera('camera', 0, 0, 0, parameters.cameraPosition, scene)
+  camera.maxZ = 1500
   // scene.showFps()
   camera.setTarget(parameters.cameraTarget)
   // camera.attachControl(canvas, false)
@@ -73,7 +76,7 @@ export default function CreateCustomScene (parameters, scope, engine, canvas) {
     // button.isPointerBlocker = true
     button.isEnabled = false
     scene.userData.buttons.push(button)
-    var animation = AnimationArrow.call(exitRoom, new BABYLON.Vector3(exitRoom.position.x, exitRoom.position.y + 30, exitRoom.position.z), 30, scene)
+    var animation = AnimationArrow.call(exitRoom, new BABYLON.Vector3(exitRoom.position.x + parameters.exits[i].animation.x, exitRoom.position.y + parameters.exits[i].animation.y, exitRoom.position.z), 30, scene)
     button.userData = {
       meshPlane: exitRoom,
       animation: animation,
@@ -206,6 +209,7 @@ export default function CreateCustomScene (parameters, scope, engine, canvas) {
           v.isEnabled = false
         })
         fadeLevel = 0
+        scope.showHint = false
       } else {
         fadeLevel -= 0.1
       }
@@ -213,7 +217,7 @@ export default function CreateCustomScene (parameters, scope, engine, canvas) {
       if (fadeLevel >= 1) {
         scene.isTransitionSceneOn = false
         fadeLevel = 1
-        var mainTexture = new BABYLON.CubeTexture('textures/skybox/' + scene.name + '/', scene, null, null, null, function () {
+        var mainTexture = new BABYLON.CubeTexture(baseUrlTextures + scene.name + '/', scene, null, null, null, function () {
           scope.showLoader = false
           scene.userData.skybox.material.reflectionTexture = mainTexture
           scene.userData.skybox.material.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE
@@ -236,6 +240,5 @@ export default function CreateCustomScene (parameters, scope, engine, canvas) {
   //   }
   // }
   // canvas.addEventListener('pointerdown', onPointerDown, false)
-
   return scene
 }
