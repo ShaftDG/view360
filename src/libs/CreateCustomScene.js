@@ -7,6 +7,7 @@ export default function CreateCustomScene (parameters, scope, engine, canvas) {
   }
   var scene = new BABYLON.Scene(engine)
   scene.name = parameters.nameScene
+  // scene.database = new BABYLON.Database(scene.name, function (evt) {console.log(evt)})
   scene.clearColor = new BABYLON.Color4(0.3, 0.3, 0.4, 0.75)
   var skybox = BABYLON.MeshBuilder.CreateSphere('skyBox', { diameter: 2000, sideOrientation: BABYLON.Mesh.BACKSIDE }, scene)
   skybox.isPickable = false
@@ -180,13 +181,19 @@ export default function CreateCustomScene (parameters, scope, engine, canvas) {
   }
 
   var flag = false
+  var flag1 = false
   window.addEventListener('pointerdown', function () {
     flag = true
+    flag1 = true
   }, false)
   window.addEventListener('pointermove', function () {
+    if (flag1 && scope.showHint && !scope.isMobile) {
+      scope.showHint = false
+    }
     flag = false
   }, false)
   window.addEventListener('pointerup', function (e) {
+    flag1 = false
     if (flag) {
       if (scope.testStarted && scene.name === scope.currentSceneName) {
         scope.attempts -= 1

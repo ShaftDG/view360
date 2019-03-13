@@ -24,6 +24,15 @@
               <stop offset="100%" stop-color="dodgerblue"
                     stop-opacity="0" class="stop-3"/>
             </linearGradient >
+            <linearGradient  id="grad-hover"
+                             x1="0%" y1="0%">
+              <stop offset="40%" stop-color="#00ffec"
+                    stop-opacity="1" class="stop-1"/>
+              <stop offset="50%" stop-color="#00ffec"
+                    stop-opacity="1" class="stop-2"/>
+              <stop offset="100%" stop-color="dodgerblue"
+                    stop-opacity="0" class="stop-3"/>
+            </linearGradient >
             <path :d="headerPathVertical" class="path" ref="path" fill=transparent stroke="white" stroke-linecap="round" stroke-width="4"/>
           </svg>
           <transition
@@ -47,17 +56,7 @@
     </v-touch>
   </div>
   <div v-else-if="typeMenu === 'horizontal'">
-    <div class='container-horizontal' ref='containerHorizontal'>
-      <svg id="svgHeader" class="bg" width="100%" height="80px" ref="svgHeader" aria-hidden="true">
-      <linearGradient  id="grad"
-      x1="100%" y1="100%">
-      <stop offset="30%" stop-color="deepskyblue"
-      stop-opacity="1" class="stop-1"/>
-      <stop offset="100%" stop-color="dodgerblue"
-      stop-opacity="0" class="stop-2"/>
-      </linearGradient >
-      <path :d="headerPathHorizontal" fill=url(#grad) stroke="white"  stroke-linecap="round" stroke-width="4"/>
-      </svg>
+    <div id="container-horizontal" class='container-horizontal' ref='containerHorizontal'>
       <div class="link-horizontal"
            v-for='option in options'
            :key='option.value'
@@ -67,6 +66,23 @@
       >
         {{ option.text }}
       </div>
+      <svg id="svgHeader" class="bg" width="100%" height="80px" ref="svgHeader" aria-hidden="true">
+        <linearGradient  id="grad"
+                         x1="100%" y1="100%">
+          <stop offset="30%" stop-color="deepskyblue"
+                stop-opacity="1" class="stop-1"/>
+          <stop offset="100%" stop-color="dodgerblue"
+                stop-opacity="0" class="stop-2"/>
+        </linearGradient >
+        <linearGradient  id="grad-hover"
+                         x1="100%" y1="100%">
+          <stop offset="30%" stop-color="#00ffec"
+                stop-opacity="1" class="stop-1"/>
+          <stop offset="100%" stop-color="#00ffec"
+                stop-opacity="0" class="stop-2"/>
+        </linearGradient >
+        <path id="pathHorizontal" :d="headerPathHorizontal" fill=url(#grad) stroke="white"  stroke-linecap="round" stroke-width="4"/>
+      </svg>
     </div>
   </div>
   <div v-else>
@@ -517,7 +533,7 @@ export default {
     cursor: pointer;
     text-shadow: 0 0 10px #101921, 0 0 15px #0c2638;
     text-align: center;
-    color: #dfefff;
+    color: white;
     z-index: 9999;
   }
 
@@ -532,14 +548,19 @@ export default {
     text-align: right;
     top: 0.375em;
     right: 20px;
-    color: #dfefff;
+    color: white;
     z-index: 9999;
   }
 
   .link-vertical:hover, .link-horizontal:hover{
     font-size: 26px;
     text-shadow: 0 -2px 10px #0b3547, 0 -2px 10px #153e61;
+    fill: url(#grad-hover);
   }
+
+  /*.link-horizontal:hover ~ svg > path{*/
+    /*fill: url(#grad-hover);*/
+  /*}*/
 
   .path {
     stroke-dasharray: 680;

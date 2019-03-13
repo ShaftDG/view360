@@ -1,0 +1,31 @@
+body { 
+        margin: 0 15px!important; 
+    }
+p   { 
+        color:  navy; 
+    }
+h1  { 
+        text-align: center; 
+    }
+img { 
+        margin: 0 auto;
+        max-width: 100%; 
+    }
+.buttonWrap {
+        margin-top: auto;
+        width: 100%;
+        margin-right: 0!important;
+        margin-left: 0!important;
+    }
+.prev-img {
+    margin-top: 15px;
+}    
+.prev-img iframe {
+    margin: 0 auto;
+}
+body h1{
+    font-size: 1.5rem;
+}
+.row h4{
+    font-size: 1rem;
+}

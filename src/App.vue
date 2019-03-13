@@ -8,7 +8,7 @@
     </shaft-navbar>
     <div class="button-test-container">
       <shaft-button @click="onDefinitionUser(true)" v-if="!testMode">Начать тест</shaft-button>
-      <shaft-button @click="onEndTest(false)" v-if="testMode">Закончить тест</shaft-button>
+      <shaft-button @click="onEndTest(false)" v-else>Закончить тест</shaft-button>
     </div>
     <div class="hint" ref="hint" v-if="showHint">
       {{textHint}}
@@ -326,7 +326,10 @@ export default {
         var scope = this
         var canvas = document.getElementById('renderCanvas')
         var engine = new BABYLON.Engine(canvas, true, { stencil: true }, false)
-        engine.disableManifestCheck = true
+        // engine.disableManifestCheck = true
+
+        // engine.enableOfflineSupport = true
+        // BABYLON.Database.IDBStorageEnabled = true
 
         BABYLON.Effect.ShadersStore['fadePixelShader'] =
           'precision highp float;' +
