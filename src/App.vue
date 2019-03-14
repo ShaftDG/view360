@@ -1380,7 +1380,7 @@ export default {
 .loadViewMini {
   position: fixed;
   bottom: 0;
-  right: 0;
+  left: 125px;
 }
 #app {
   position:absolute;
