@@ -9,8 +9,13 @@ h1  {
     }
 img { 
         margin: 0 auto;
-        max-width: 100%; 
+        max-width: 100%;
     }
+
+.col-md-6 img {
+    width: 100%;
+}
+
 .buttonWrap {
         margin-top: auto;
         width: 100%;

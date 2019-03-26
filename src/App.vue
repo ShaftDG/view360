@@ -1253,28 +1253,28 @@ export default {
               textHint: 'Приставная кровать ребенка',
               positionElement: new BABYLON.Vector3(682, -249, 685),
               rotationElement: new BABYLON.Vector3(0, 0, 0),
-              url: 'modal/bedroom/index13.html'
+              url: 'modal/childroom/index3.html'
             },
             {
               nameElement: '14',
               textHint: 'Маленький коврик (ребенок может на нем поскользнуться)',
               positionElement: new BABYLON.Vector3(-135, -611, 779),
               rotationElement: new BABYLON.Vector3(0, 0, 0),
-              url: 'modal/bedroom/index14.html'
+              url: 'modal/bedroom/index13.html'
             },
             {
               nameElement: '15',
               textHint: 'Лекарства на прикроватной тумбочке ',
               positionElement: new BABYLON.Vector3(942, -182, -280),
               rotationElement: new BABYLON.Vector3(0, 0, 0),
-              url: 'modal/bedroom/index.html'
+              url: 'modal/bedroom/index14.html'
             },
             {
               nameElement: '16',
               textHint: 'Комнатные растения',
               positionElement: new BABYLON.Vector3(-55, -400, -913),
               rotationElement: new BABYLON.Vector3(0, 0, 0),
-              url: 'modal/bedroom/index.html'
+              url: 'modal/hall/index4.html'
             }
           ]
         }
