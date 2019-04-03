@@ -90,12 +90,14 @@ export default function CreateCustomScene (parameters, scope, engine, canvas) {
         scope.showHint = true
         scope.textHint = b.target.userData.textHint
         setHintPosition(b.target.userData.meshPlane)
+        canvas.classList.add('canvasCursorPointer')
       }
     })
     button.onPointerOutObservable.add(function (a, b) {
       if (b.target.userData && !scope.testMode) {
         b.target.userData.meshPlane.scaling = new BABYLON.Vector3(1.0, 1.0, 1.0)
         scope.showHint = false
+        canvas.classList.remove('canvasCursorPointer')
       }
     })
 
@@ -111,7 +113,7 @@ export default function CreateCustomScene (parameters, scope, engine, canvas) {
 
   scope.numElements = parameters.interactiveElements.length
   for (var j = 0; j < parameters.interactiveElements.length; j++) {
-    var interactiveElement = BABYLON.MeshBuilder.CreatePlane('interactiveElements_' + parameters.interactiveElements[j].nameElement, { width: 150, height: 150 })
+    var interactiveElement = BABYLON.MeshBuilder.CreatePlane('interactiveElements_' + parameters.interactiveElements[j].nameElement, { width: 180, height: 180 })
     interactiveElement.position = parameters.interactiveElements[j].positionElement
     interactiveElement.rotation = parameters.interactiveElements[j].rotationElement
     interactiveElement.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL
@@ -125,7 +127,7 @@ export default function CreateCustomScene (parameters, scope, engine, canvas) {
     buttonElement.height = 1
     buttonElement.thickness = 0
     advancedTextureElement.addControl(buttonElement)
-    // buttonElement.hoverCursor = 'pointer'
+    scene.hoverCursor = 'pointer'
     // buttonElement.isPointerBlocker = true
     buttonElement.isEnabled = false
     scene.userData.buttons.push(buttonElement)
@@ -134,7 +136,6 @@ export default function CreateCustomScene (parameters, scope, engine, canvas) {
       elemnentURL: parameters.interactiveElements[j].url,
       textHint: parameters.interactiveElements[j].textHint
     }
-
     buttonElement.onPointerMoveObservable.add(function (a, b) {
       if (b.target.userData && !scope.testMode && !scope.showHint) {
         b.target.userData.meshPlane.scaling = new BABYLON.Vector3(1.5, 1.5, 1.5)
@@ -142,6 +143,7 @@ export default function CreateCustomScene (parameters, scope, engine, canvas) {
         scope.textHint = b.target.userData.textHint
         setHintPosition(b.target.userData.meshPlane)
       }
+      canvas.classList.add('canvasCursorPointer')
     })
 
     buttonElement.onPointerOutObservable.add(function (a, b) {
@@ -149,6 +151,7 @@ export default function CreateCustomScene (parameters, scope, engine, canvas) {
         b.target.userData.meshPlane.scaling = new BABYLON.Vector3(1.0, 1.0, 1.0)
         scope.showHint = false
       }
+      canvas.classList.remove('canvasCursorPointer')
     })
 
     buttonElement.onPointerClickObservable.add (function (a, b) {
