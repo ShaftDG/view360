@@ -67,6 +67,7 @@
                  :type="'modal-container-congratulations'"
                  >
       <div slot="body">
+        <h3>{{resultReport}}</h3>
         <h3>{{userName}}, ваш результат:</h3>
         <h3>{{resultTest}} из {{numElements}}</h3>
         <button class="submit" @click="onEndTest(false)">Закрыть</button>
@@ -153,6 +154,18 @@ export default {
     }
   },
   computed: {
+    resultReport: function () {
+      let percent = this.resultTest * 100 / this.numElements
+      if (percent >= 100) {
+        return 'Отличный результат! Вы эксперт по безопасности'
+      } else if (percent >= 90) {
+        return 'Прекрасный результат! Ваши дети в безопасности'
+      } else if (percent >= 50) {
+        return 'Хороший результат, но надо еще посмотреть видеокурс по безопасности на mamexpert.by'
+      } else if (percent >= 0) {
+        return 'Безопасность детей в руках родителей. Срочно смотрите видеокурс по безопасности на mamexpert.by'
+      }
+    },
     numAttempts: function () {
       return 'Количество попыток: ' + this.attempts
     },

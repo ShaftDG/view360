@@ -57,17 +57,25 @@ export default {
   .modal-wrapper {
     display: table-cell;
     vertical-align: middle;
+    opacity: 0.9;
   }
 
   .modal-container {
-    width: 75%;
+    width: 60%;
     height: 75%;
     margin: 0px auto;
     padding: 10px 15px;
     background-color: #fff;
-    border-radius: 2px;
+    border-radius: 10px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
     transition: all .3s ease;
+  }
+
+  @media screen and (max-width: 700px) {
+    .modal-container {
+      width: 91%;
+      height: 99%;
+    }
   }
 
   .modal-container-congratulations {
